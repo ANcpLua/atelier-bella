@@ -8,7 +8,7 @@ import {
   X,
 } from "lucide-react";
 import type { CSSProperties, FormEvent, PointerEvent, TouchEvent } from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Watercolor from "@/components/react-bits/watercolor";
 import {
   artwork,
@@ -60,11 +60,6 @@ export default function App() {
   const selectedArtwork = selectedArtworkId
     ? (artworkById.get(selectedArtworkId) ?? null)
     : null;
-
-  const activeArtwork = useMemo(() => {
-    const firstId = activeRoom.artworkIds[0] ?? heroArtwork.id;
-    return getArtwork(firstId);
-  }, [activeRoom]);
 
   const goToRoom = useCallback((roomId: string | null): void => {
     if (!roomId || !roomById.has(roomId)) return;
@@ -132,7 +127,6 @@ export default function App() {
       <SiteNav activeRoomId={activeRoomId} onRoomChange={goToRoom} />
       <main id="exhibition">
         <ExhibitionShell
-          activeArtwork={activeArtwork}
           activeRoom={activeRoom}
           formState={formState}
           onArtworkSelect={setSelectedArtworkId}
@@ -195,7 +189,6 @@ function SiteNav({
 }
 
 function ExhibitionShell({
-  activeArtwork,
   activeRoom,
   formState,
   onArtworkSelect,
@@ -209,7 +202,6 @@ function ExhibitionShell({
   onTouchStart,
   selectedArtwork,
 }: {
-  activeArtwork: Artwork;
   activeRoom: ExhibitionRoom;
   formState: "idle" | "sent";
   onArtworkSelect: (artworkId: string | null) => void;
@@ -256,7 +248,6 @@ function ExhibitionShell({
         className={`exhibition-layout exhibition-layout--${activeRoom.purpose}`}
       >
         <ExhibitionCopy
-          activeArtwork={activeArtwork}
           activeRoom={activeRoom}
           onNextRoom={onNextRoom}
           onPreviousRoom={onPreviousRoom}
@@ -295,12 +286,10 @@ function ExhibitionShell({
 }
 
 function ExhibitionCopy({
-  activeArtwork,
   activeRoom,
   onNextRoom,
   onPreviousRoom,
 }: {
-  activeArtwork: Artwork;
   activeRoom: ExhibitionRoom;
   onNextRoom: () => void;
   onPreviousRoom: () => void;
@@ -309,30 +298,24 @@ function ExhibitionCopy({
     <aside className="exhibition-copy" aria-live="polite">
       <p className="section-kicker">{activeRoom.kicker}</p>
       <h1 className="exhibition-title">{activeRoom.title}</h1>
-      <p className="exhibition-lede">{roomCopy[activeRoom.id]}</p>
-      <div className="room-meta">
-        <span>{activeArtwork.editionLabel}</span>
-        <span>{activeArtwork.priceLabel}</span>
-        <span>{getStatusLabel(activeArtwork.status)}</span>
-      </div>
       <div className="room-actions">
         <button
           className="secondary-cta"
           type="button"
+          aria-label="Vorheriger Raum"
           disabled={!activeRoom.previousRoomId}
           onClick={onPreviousRoom}
         >
-          <ArrowLeft size={17} />
-          Zurueck
+          <ArrowLeft size={15} />
         </button>
         <button
           className="primary-cta"
           type="button"
+          aria-label="Naechster Raum"
           disabled={!activeRoom.nextRoomId}
           onClick={onNextRoom}
         >
-          Weiter
-          <ArrowRight size={17} />
+          <ArrowRight size={15} />
         </button>
       </div>
     </aside>
@@ -355,7 +338,7 @@ function RoomStage({
   if (activeRoom.purpose === "contact") {
     return (
       <div className="gallery-stage gallery-stage--contact">
-        <GalleryArchitecture room={activeRoom} />
+        <GalleryArchitecture />
         <div className="contact-room-panel">
           <div>
             <p className="section-kicker">Kontakt</p>
@@ -380,7 +363,7 @@ function RoomStage({
         } as CSSProperties
       }
     >
-      <GalleryArchitecture room={activeRoom} />
+      <GalleryArchitecture />
       <div className="room-wall-content">
         {activeRoom.artworkIds.map((id) => {
           const piece = getArtwork(id);
@@ -432,7 +415,7 @@ function RoomStage({
   );
 }
 
-function GalleryArchitecture({ room }: { room: ExhibitionRoom }) {
+function GalleryArchitecture() {
   return (
     <>
       <div className="gallery-ceiling" />
@@ -440,9 +423,7 @@ function GalleryArchitecture({ room }: { room: ExhibitionRoom }) {
         <strong>Atelier Bella</strong>
         <span>Online Collection</span>
       </div>
-      <div className="gallery-back-wall">
-        <span>{room.title}</span>
-      </div>
+      <div className="gallery-back-wall" aria-hidden="true" />
       <div className="gallery-side-wall gallery-side-wall--left" />
       <div className="gallery-side-wall gallery-side-wall--right" />
       <div className="gallery-floor" />
