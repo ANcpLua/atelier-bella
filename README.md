@@ -19,9 +19,10 @@ Tailwind CSS v4, and a Starter-only React Bits registry setup.
 Set `REACTBITS_LICENSE_KEY` in `.env.local` before installing paid Starter
 components with `npx shadcn@latest add @reactbits-starter/<component>-tw`.
 
-The current app uses local role-compatible primitives under
-`src/components/react-bits`. Replace those files with installed Starter
-components when the license key is available.
+`src/components/react-bits/` holds the **real, licensed React Bits Starter
+components** (the installed originals, Prettier-reformatted on commit) — these
+are not placeholders. Because that is premium licensed source, **this repository
+is private; do not make it public.**
 
 ## Artwork
 

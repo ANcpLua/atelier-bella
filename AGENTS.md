@@ -4,6 +4,10 @@ A single-page React storefront for a painterly online atelier: a hero, themed
 exhibition rooms, an artwork gallery, and per-artwork "digital-auction" cards
 that link out to payment links. Static SPA — no backend, no SSR.
 
+> **Private repo — keep it private.** `src/components/react-bits/` contains
+> licensed React Bits Starter source; making this repository public would
+> violate the React Bits license.
+
 ## Stack
 
 - **Vite 7** + **React 19** + **TypeScript** (ESM, `"type": "module"`)
@@ -68,9 +72,10 @@ Project-specific notes (the SKILL.md is written Next.js-first; this is Vite):
   provider.
 - **`"use client"` is a harmless no-op** here (Vite ignores it). Leave it in
   installed files; don't add it to your own.
-- Components install to `src/components/react-bits/`. Current files are local,
-  role-compatible primitives (e.g. `watercolor`, `warp-twister`); replace them
-  with real Starter components once the license key is set.
+- `src/components/react-bits/` already holds the **real, licensed Starter
+  components** (e.g. `watercolor`, `warp-twister`) — verified ~95–100% identical
+  to the registry source, just Prettier-reformatted. They are NOT placeholders;
+  don't "replace" them. This premium source is why the repo is private.
 - License key: `REACTBITS_LICENSE_KEY` in `.env.local` (gitignored). Install
   with `npx shadcn@latest add @reactbits-starter/<slug>-tw`.
 
@@ -84,6 +89,11 @@ links are intentionally public** (e.g. Stripe Payment Links) — not secrets.
 Set them in `.env.local` locally.
 
 ## Deployment
+
+> **Status:** the repo is now **private**, so GitHub Pages (free plan) no longer
+> serves the site, and `deploy-pages.yml` will no longer publish. Hosting
+> migration to a host that builds private repos for free (Cloudflare Pages /
+> Netlify / Vercel) is pending.
 
 GitHub Pages via `.github/workflows/deploy-pages.yml` on push to `main` (or
 manual `workflow_dispatch`):
