@@ -3,17 +3,12 @@ import {
   ArrowRight,
   DoorOpen,
   Mail,
-  MousePointer2,
   ShoppingBag,
   Sparkles,
   X,
 } from "lucide-react";
 import type { CSSProperties, FormEvent, PointerEvent, TouchEvent } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import GlassCursor from "@/components/react-bits/glass-cursor";
-import ShaderReveal from "@/components/react-bits/shader-reveal";
-import StaggeredText from "@/components/react-bits/staggered-text";
-import WarpedCard from "@/components/react-bits/warped-card";
 import Watercolor from "@/components/react-bits/watercolor";
 import {
   artwork,
@@ -27,8 +22,6 @@ import {
 const roomById = new Map(exhibitionRooms.map((room) => [room.id, room]));
 
 const roomCopy: Record<string, string> = {
-  foyer:
-    "Eine offene Atelier-Tuer: eintreten, Bilder nah erleben und in Ruhe weitergehen.",
   "north-wall":
     "Die erste Wand zeigt Bellas Avocado-Serie gross, farbig und mit weichem Licht.",
   "side-room":
@@ -38,13 +31,6 @@ const roomCopy: Record<string, string> = {
   "contact-room":
     "Fuer Auftraege, Besuche oder ein Bild, das du erst kurz besprechen willst.",
 };
-
-const frameSlots = [
-  "room-frame--left",
-  "room-frame--center",
-  "room-frame--right",
-  "room-frame--low",
-] as const;
 
 function getArtwork(id: string): Artwork {
   return artworkById.get(id) ?? artwork[0];
@@ -178,7 +164,7 @@ function SiteNav({
         <button
           className="brand-button"
           type="button"
-          onClick={() => onRoomChange("foyer")}
+          onClick={() => onRoomChange(exhibitionRooms[0].id)}
         >
           Atelier Bella
         </button>
@@ -266,7 +252,9 @@ function ExhibitionShell({
         cursorIntensity={0.35}
       />
 
-      <div className="exhibition-layout">
+      <div
+        className={`exhibition-layout exhibition-layout--${activeRoom.purpose}`}
+      >
         <ExhibitionCopy
           activeArtwork={activeArtwork}
           activeRoom={activeRoom}
@@ -279,7 +267,6 @@ function ExhibitionShell({
           formState={formState}
           onArtworkSelect={onArtworkSelect}
           onContactSubmit={onContactSubmit}
-          onNextRoom={onNextRoom}
           onRoomChange={onRoomChange}
         />
       </div>
@@ -321,15 +308,7 @@ function ExhibitionCopy({
   return (
     <aside className="exhibition-copy" aria-live="polite">
       <p className="section-kicker">{activeRoom.kicker}</p>
-      <StaggeredText
-        as="h1"
-        className="exhibition-title"
-        delay={42}
-        direction="bottom"
-        duration={0.7}
-        segmentBy="words"
-        text={activeRoom.title}
-      />
+      <h1 className="exhibition-title">{activeRoom.title}</h1>
       <p className="exhibition-lede">{roomCopy[activeRoom.id]}</p>
       <div className="room-meta">
         <span>{activeArtwork.editionLabel}</span>
@@ -356,11 +335,6 @@ function ExhibitionCopy({
           <ArrowRight size={17} />
         </button>
       </div>
-      <p className="interaction-note">
-        <MousePointer2 size={16} />
-        Bewege dich durch die Raeume. Auf dem Handy einfach wischen oder die
-        Tuer antippen.
-      </p>
     </aside>
   );
 }
@@ -370,20 +344,14 @@ function RoomStage({
   formState,
   onArtworkSelect,
   onContactSubmit,
-  onNextRoom,
   onRoomChange,
 }: {
   activeRoom: ExhibitionRoom;
   formState: "idle" | "sent";
   onArtworkSelect: (artworkId: string | null) => void;
   onContactSubmit: (event: FormEvent<HTMLFormElement>) => void;
-  onNextRoom: () => void;
   onRoomChange: (roomId: string | null) => void;
 }) {
-  if (activeRoom.purpose === "intro") {
-    return <IntroStage onNextRoom={onNextRoom} />;
-  }
-
   if (activeRoom.purpose === "contact") {
     return (
       <div className="gallery-stage gallery-stage--contact">
@@ -405,7 +373,7 @@ function RoomStage({
 
   return (
     <div
-      className={`gallery-stage gallery-stage--${activeRoom.purpose}`}
+      className={`gallery-stage gallery-stage--${activeRoom.purpose} gallery-stage--${activeRoom.id}`}
       style={
         {
           "--room-accent": getArtwork(activeRoom.artworkIds[0]).accent,
@@ -414,13 +382,12 @@ function RoomStage({
     >
       <GalleryArchitecture room={activeRoom} />
       <div className="room-wall-content">
-        {activeRoom.artworkIds.map((id, index) => {
+        {activeRoom.artworkIds.map((id) => {
           const piece = getArtwork(id);
-          const slot = frameSlots[index % frameSlots.length];
 
           return (
             <button
-              className={`room-frame ${slot}`}
+              className="room-frame"
               key={piece.id}
               style={{ "--art-accent": piece.accent } as CSSProperties}
               type="button"
@@ -449,7 +416,7 @@ function RoomStage({
           onClick={() => onRoomChange("contact-room")}
         >
           <Mail size={16} />
-          Kontakt
+          <span>Kontakt</span>
         </button>
       ) : (
         <button
@@ -458,49 +425,9 @@ function RoomStage({
           onClick={() => onRoomChange(activeRoom.nextRoomId)}
         >
           <DoorOpen size={17} />
-          Weitergehen
+          <span>Weiter</span>
         </button>
       )}
-    </div>
-  );
-}
-
-function IntroStage({ onNextRoom }: { onNextRoom: () => void }) {
-  const secondArtwork = getArtwork("avocado-01");
-
-  return (
-    <div className="gallery-stage gallery-stage--intro">
-      <GalleryArchitecture room={exhibitionRooms[0]} />
-      <button className="entry-door" type="button" onClick={onNextRoom}>
-        <ShaderReveal
-          autoIntensity={1.4}
-          autoSpeed={0.35}
-          backImage={secondArtwork.src}
-          className="entry-door__shader"
-          cursorSize={180}
-          frontImage={heroArtwork.src}
-          mouseForce={34}
-          revealSoftness={1.2}
-          revealStrength={0.64}
-          resolution={0.45}
-        />
-        <span className="entry-door__label">
-          <DoorOpen size={18} />
-          Atelier betreten
-        </span>
-      </button>
-      <div className="glass-preview" aria-hidden="true">
-        <GlassCursor
-          blobSize={0.032}
-          borderGlow={0.28}
-          className="glass-preview__cursor"
-          dampening={0.18}
-          opacity={0.72}
-          refraction={0.24}
-          src={heroArtwork.src}
-          trailLength={24}
-        />
-      </div>
     </div>
   );
 }
@@ -551,11 +478,7 @@ function MobileDoorPath({
             <button
               className="mobile-door"
               type="button"
-              onClick={
-                activeRoom.purpose === "intro"
-                  ? onNextRoom
-                  : () => onArtworkSelect(lead.id)
-              }
+              onClick={() => onArtworkSelect(lead.id)}
             >
               <img
                 alt={lead.title}
@@ -563,11 +486,7 @@ function MobileDoorPath({
                 width={lead.width}
                 height={lead.height}
               />
-              <span>
-                {activeRoom.purpose === "intro"
-                  ? "Atelier betreten"
-                  : "Bild oeffnen"}
-              </span>
+              <span>Bild oeffnen</span>
             </button>
             <div className="mobile-artwork-strip">
               {pieces.map((piece) => (
@@ -643,26 +562,14 @@ function ArtworkPanel({
         >
           <X size={18} />
         </button>
-        <div className="detail-art detail-art--desktop">
-          <WarpedCard
-            aspectRatio={artwork.height / artwork.width}
-            borderRadius={8}
-            cardWidth="min(44vw, 540px)"
-            className="detail-warp"
-            height="100%"
-            imageSrc={artwork.src}
-            radius={0.82}
-            strength={1.06}
-            width="100%"
+        <div className="detail-art">
+          <img
+            alt={artwork.title}
+            height={artwork.height}
+            src={artwork.src}
+            width={artwork.width}
           />
         </div>
-        <img
-          alt={artwork.title}
-          className="detail-art detail-art--mobile"
-          height={artwork.height}
-          src={artwork.src}
-          width={artwork.width}
-        />
         <div className="detail-copy">
           <p className="section-kicker">{artwork.editionLabel}</p>
           <h2 id="artwork-dialog-title">{artwork.title}</h2>

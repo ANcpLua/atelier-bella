@@ -35,7 +35,7 @@ export type ExhibitionRoom = {
   artworkIds: string[];
   nextRoomId: string | null;
   previousRoomId: string | null;
-  purpose: "intro" | "gallery" | "buy" | "contact";
+  purpose: "gallery" | "buy" | "contact";
 };
 
 function resolvePaymentLink(paymentEnvKey: PaymentEnvKey): string {
@@ -177,21 +177,12 @@ export const artwork: Artwork[] = [
 
 export const exhibitionRooms: ExhibitionRoom[] = [
   {
-    id: "foyer",
-    title: "Eintreten",
-    kicker: "Online Atelier",
-    artworkIds: ["avocado-08"],
-    nextRoomId: "north-wall",
-    previousRoomId: null,
-    purpose: "intro",
-  },
-  {
     id: "north-wall",
     title: "Nordwand",
     kicker: "Galerie",
     artworkIds: ["avocado-01", "avocado-03", "avocado-04"],
     nextRoomId: "side-room",
-    previousRoomId: "foyer",
+    previousRoomId: null,
     purpose: "gallery",
   },
   {
