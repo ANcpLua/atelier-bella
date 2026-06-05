@@ -44,14 +44,19 @@ body {
   overflow-x: hidden;
   background:
     radial-gradient(
-      circle at 78% 16%,
-      rgba(40, 216, 212, 0.18),
-      transparent 25rem
+      circle at 50% 8%,
+      rgba(247, 243, 234, 0.08),
+      transparent 26rem
     ),
     radial-gradient(
-      circle at 12% 84%,
-      rgba(230, 73, 146, 0.18),
-      transparent 24rem
+      circle at 78% 18%,
+      rgba(40, 216, 212, 0.16),
+      transparent 28rem
+    ),
+    radial-gradient(
+      circle at 14% 82%,
+      rgba(230, 73, 146, 0.14),
+      transparent 25rem
     ),
     #071016;
 }
@@ -204,7 +209,7 @@ img {
   position: absolute;
   z-index: -2;
   inset: 0;
-  opacity: 0.95;
+  opacity: 0.72;
 }
 
 .exhibition-shell::after {
@@ -216,12 +221,12 @@ img {
     linear-gradient(
       90deg,
       rgba(7, 16, 22, 0.88),
-      rgba(7, 16, 22, 0.34) 42%,
+      rgba(7, 16, 22, 0.18) 42%,
       rgba(7, 16, 22, 0.72)
     ),
     radial-gradient(
       circle at 58% 34%,
-      rgba(40, 216, 212, 0.2),
+      rgba(40, 216, 212, 0.13),
       transparent 31rem
     ),
     radial-gradient(
@@ -248,68 +253,68 @@ img {
 .exhibition-copy {
   position: absolute;
   z-index: 7;
-  bottom: clamp(1rem, 2vw, 1.45rem);
-  left: clamp(1rem, 2vw, 1.45rem);
+  bottom: clamp(0.8rem, 1.5vw, 1.15rem);
+  left: clamp(0.9rem, 1.8vw, 1.25rem);
   display: grid;
-  width: min(21rem, calc(100% - 2rem));
+  width: min(17.75rem, calc(100% - 2rem));
   min-height: 0;
   align-content: start;
-  border-left: 2px solid rgba(40, 216, 212, 0.72);
-  border-radius: 0;
+  border-left: 1px solid rgba(40, 216, 212, 0.72);
+  border-radius: 6px;
   background:
     linear-gradient(
       90deg,
-      rgba(7, 16, 22, 0.72),
-      rgba(7, 16, 22, 0.36) 72%,
+      rgba(7, 16, 22, 0.62),
+      rgba(7, 16, 22, 0.24) 74%,
       rgba(7, 16, 22, 0)
     ),
-    rgba(7, 16, 22, 0.28);
-  padding: 0.55rem 0 0.6rem 0.9rem;
-  backdrop-filter: blur(8px);
+    rgba(7, 16, 22, 0.18);
+  padding: 0.5rem 0 0.55rem 0.75rem;
+  backdrop-filter: blur(6px);
 }
 
 .section-kicker {
   margin: 0;
   color: #28d8d4;
-  font-size: 0.84rem;
+  font-size: 0.72rem;
   font-weight: 850;
   letter-spacing: 0;
   text-transform: uppercase;
 }
 
 .exhibition-title {
-  margin: 0.45rem 0 0;
+  margin: 0.26rem 0 0;
   color: #f7f3ea;
   font-family: var(--font-serif);
-  font-size: clamp(2rem, 3.2vw, 2.85rem);
+  font-size: clamp(1.55rem, 2.15vw, 2rem);
   font-weight: 650;
   line-height: 0.98;
 }
 
 .exhibition-lede {
-  max-width: 19rem;
-  margin: 0.65rem 0 0;
+  max-width: 16rem;
+  margin: 0.45rem 0 0;
   color: color-mix(in srgb, #f7f3ea 73%, #a9bbc4);
-  font-size: 0.88rem;
-  line-height: 1.58;
+  font-size: 0.78rem;
+  line-height: 1.52;
 }
 
 .room-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.42rem;
-  margin-top: 0.8rem;
+  gap: 0.3rem;
+  margin-top: 0.55rem;
 }
 
 .room-meta span {
   display: inline-flex;
-  min-height: 1.75rem;
+  min-height: 1.45rem;
   align-items: center;
   border: 1px solid rgba(247, 243, 234, 0.11);
   border-radius: 999px;
-  padding: 0.28rem 0.66rem;
+  padding: 0.2rem 0.48rem;
   color: #f7f3ea;
-  font-size: 0.72rem;
+  font-size: 0.64rem;
   font-weight: 800;
 }
 
@@ -324,20 +329,21 @@ img {
 .mobile-room-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.55rem;
-  margin-top: 0.95rem;
+  gap: 0.42rem;
+  margin-top: 0.65rem;
 }
 
 .primary-cta,
 .secondary-cta,
 .disabled-cta {
   display: inline-flex;
-  min-height: 3rem;
+  min-height: 2.55rem;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
   border-radius: 999px;
-  padding: 0.78rem 1.1rem;
+  padding: 0.62rem 0.9rem;
+  font-size: 0.84rem;
   font-weight: 850;
   transition:
     border-color 180ms ease,
@@ -381,30 +387,30 @@ img {
 
 .gallery-stage {
   position: relative;
-  height: calc(100svh - 7rem);
-  min-height: 42rem;
+  height: calc(100svh - 6.7rem);
+  min-height: 41.5rem;
   overflow: hidden;
-  border: 1px solid rgba(40, 216, 212, 0.28);
+  border: 1px solid rgba(40, 216, 212, 0.26);
   border-radius: 8px;
   background:
     radial-gradient(
-      circle at 50% 18%,
-      rgba(40, 216, 212, 0.24),
+      circle at 50% 15%,
+      rgba(40, 216, 212, 0.17),
       transparent 26rem
     ),
     radial-gradient(
       circle at 72% 50%,
-      rgba(230, 73, 146, 0.17),
+      rgba(230, 73, 146, 0.11),
       transparent 24rem
     ),
-    linear-gradient(180deg, rgba(16, 42, 58, 0.92), rgba(7, 16, 22, 0.96)),
+    linear-gradient(180deg, rgba(16, 42, 58, 0.88), rgba(7, 16, 22, 0.98)),
     #0b1e2d;
   box-shadow:
     0 0 0 1px rgba(40, 216, 212, 0.12),
-    0 0 74px rgba(40, 216, 212, 0.12),
-    0 0 92px rgba(230, 73, 146, 0.08),
-    0 34px 90px rgba(0, 0, 0, 0.34);
-  perspective: 980px;
+    0 0 68px rgba(40, 216, 212, 0.1),
+    0 0 88px rgba(230, 73, 146, 0.06),
+    0 34px 90px rgba(0, 0, 0, 0.38);
+  perspective: 1040px;
   transform: rotateX(var(--stage-rotate-x, 0deg))
     rotateY(var(--stage-rotate-y, 0deg));
   transform-style: preserve-3d;
@@ -422,51 +428,82 @@ img {
 
 .gallery-ceiling {
   inset: 0 0 auto;
-  height: 18%;
+  height: 16%;
   background: linear-gradient(
     180deg,
-    rgba(7, 16, 22, 0.72),
+    rgba(7, 16, 22, 0.8),
     rgba(16, 42, 58, 0)
   );
 }
 
+.gallery-masthead {
+  position: absolute;
+  z-index: 4;
+  top: clamp(1rem, 2.2vh, 1.5rem);
+  left: 50%;
+  display: grid;
+  gap: 0.14rem;
+  justify-items: center;
+  transform: translateX(-50%);
+  color: color-mix(in srgb, #f7f3ea 82%, #28d8d4);
+  pointer-events: none;
+  text-align: center;
+  text-shadow: 0 0 20px rgba(40, 216, 212, 0.16);
+}
+
+.gallery-masthead strong {
+  font-family: var(--font-serif);
+  font-size: 1.9rem;
+  font-weight: 650;
+  text-transform: uppercase;
+}
+
+.gallery-masthead span {
+  color: color-mix(in srgb, #f7f3ea 58%, #28d8d4);
+  font-size: 0.68rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
 .gallery-back-wall {
-  inset: 0 0 34%;
+  inset: 0 0 31%;
   border: 0;
   background:
     radial-gradient(
       circle at 50% 18%,
-      rgba(40, 216, 212, 0.24),
-      transparent 24rem
+      rgba(40, 216, 212, 0.2),
+      transparent 25rem
     ),
     radial-gradient(
-      circle at 23% 78%,
-      rgba(230, 73, 146, 0.14),
-      transparent 22rem
+      circle at 25% 76%,
+      rgba(230, 73, 146, 0.1),
+      transparent 23rem
     ),
-    linear-gradient(180deg, rgba(31, 111, 168, 0.24), rgba(16, 42, 58, 0.28)),
+    linear-gradient(180deg, rgba(31, 111, 168, 0.2), rgba(16, 42, 58, 0.25)),
     #102a3a;
-  transform: translateZ(-96px);
+  transform: translateZ(-110px);
   transform-style: preserve-3d;
   box-shadow:
-    inset 0 -6rem 10rem rgba(7, 16, 22, 0.46),
-    0 0 70px rgba(40, 216, 212, 0.08);
+    inset 0 -6rem 10rem rgba(7, 16, 22, 0.42),
+    inset 5rem 0 8rem rgba(7, 16, 22, 0.18),
+    inset -5rem 0 8rem rgba(7, 16, 22, 0.18),
+    0 0 70px rgba(40, 216, 212, 0.06);
 }
 
 .gallery-back-wall span {
   position: absolute;
-  top: 1.05rem;
+  top: clamp(4.4rem, 9vh, 5.5rem);
   left: 50%;
   transform: translateX(-50%);
-  color: rgba(247, 243, 234, 0.18);
+  color: rgba(247, 243, 234, 0.11);
   font-family: var(--font-serif);
-  font-size: clamp(1.25rem, 2vw, 1.9rem);
+  font-size: clamp(1rem, 1.45vw, 1.35rem);
   font-weight: 650;
 }
 
 .gallery-side-wall {
   top: 0;
-  bottom: 34%;
+  bottom: 31%;
   width: 10%;
   background: linear-gradient(
     90deg,
@@ -489,21 +526,24 @@ img {
 
 .gallery-floor {
   inset: auto 0 0;
-  height: 34%;
+  height: 39%;
   background:
-    linear-gradient(180deg, rgba(7, 16, 22, 0.1), rgba(7, 16, 22, 0.96)),
-    repeating-linear-gradient(
-      90deg,
-      rgba(40, 216, 212, 0.08) 0 1px,
-      transparent 1px 4.8rem
+    linear-gradient(180deg, rgba(7, 16, 22, 0.02), rgba(7, 16, 22, 0.98)),
+    radial-gradient(
+      ellipse at 50% 4%,
+      rgba(40, 216, 212, 0.12),
+      transparent 42%
     ),
-    repeating-linear-gradient(
-      0deg,
-      rgba(230, 73, 146, 0.055) 0 1px,
-      transparent 1px 3.6rem
-    ),
-    #11171d;
-  transform: rotateX(66deg);
+    conic-gradient(
+        from 45deg,
+        rgba(247, 243, 234, 0.055) 0 25%,
+        rgba(7, 16, 22, 0.34) 0 50%,
+        rgba(40, 216, 212, 0.052) 0 75%,
+        rgba(230, 73, 146, 0.04) 0 100%
+      )
+      0 0 / 4.8rem 4.8rem,
+    #10151a;
+  transform: rotateX(64deg);
   transform-origin: bottom center;
   box-shadow: inset 0 5rem 8rem rgba(0, 0, 0, 0.38);
 }
@@ -511,7 +551,7 @@ img {
 .room-wall-content {
   position: absolute;
   z-index: 2;
-  inset: 20% 10% 40%;
+  inset: 18.5% 10% 42%;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(1rem, 2.2vw, 1.8rem);
@@ -524,7 +564,7 @@ img {
 .room-frame {
   position: relative;
   display: grid;
-  width: min(100%, 13rem);
+  width: min(100%, 12.8rem);
   padding: 0;
   border: 0;
   background: transparent;
@@ -537,21 +577,21 @@ img {
 }
 
 .room-frame:nth-child(2) {
-  width: min(100%, 15rem);
-  margin-top: -1rem;
+  width: min(100%, 15.2rem);
+  margin-top: -0.9rem;
 }
 
 .room-frame:hover,
 .room-frame:focus-visible {
   filter: drop-shadow(
-    0 0 1.4rem color-mix(in srgb, var(--art-accent) 42%, transparent)
+    0 0 1.35rem color-mix(in srgb, var(--art-accent) 34%, transparent)
   );
   outline: none;
   transform: translateZ(34px) scale(1.035);
 }
 
 .gallery-stage--buy .room-wall-content {
-  inset: 15% 8% 28%;
+  inset: 15.5% 8% 31%;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1rem;
 }
@@ -567,7 +607,7 @@ img {
 }
 
 .gallery-stage--side-room .room-wall-content {
-  inset: 21% 8% 40%;
+  inset: 20% 8% 42%;
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
@@ -578,15 +618,17 @@ img {
 }
 
 .room-frame__image {
+  position: relative;
   display: block;
   overflow: hidden;
-  border: 0.55rem solid #f7f3ea;
-  border-radius: 8px;
+  border: 0.5rem solid #f7f3ea;
+  border-radius: 6px;
   background: #071016;
   box-shadow:
-    0 24px 44px rgba(0, 0, 0, 0.28),
-    0 0 0 1px color-mix(in srgb, var(--art-accent) 46%, transparent),
-    0 0 44px color-mix(in srgb, var(--art-accent) 19%, transparent);
+    0 18px 34px rgba(0, 0, 0, 0.34),
+    0 0 0 2px color-mix(in srgb, var(--art-accent) 48%, #28d8d4 30%),
+    0 0 0 6px rgba(7, 16, 22, 0.34),
+    0 0 38px color-mix(in srgb, var(--art-accent) 17%, transparent);
 }
 
 .room-frame__image img {
@@ -598,16 +640,16 @@ img {
 
 .room-frame__label {
   display: grid;
-  gap: 0.1rem;
+  gap: 0.06rem;
   width: max-content;
   max-width: 100%;
-  margin: 0.78rem auto 0;
-  border: 1px solid rgba(40, 216, 212, 0.16);
-  border-radius: 8px;
+  margin: 0.72rem auto 0;
+  border: 1px solid rgba(40, 216, 212, 0.18);
+  border-radius: 6px;
   background:
     linear-gradient(135deg, rgba(40, 216, 212, 0.1), rgba(230, 73, 146, 0.08)),
     rgba(7, 16, 22, 0.68);
-  padding: 0.52rem 0.78rem;
+  padding: 0.46rem 0.68rem;
   text-align: center;
   backdrop-filter: blur(10px);
 }
@@ -624,11 +666,11 @@ img {
 .door-hotspot {
   position: absolute;
   right: 5%;
-  bottom: 34%;
+  bottom: 31%;
   display: block;
-  width: 4.7rem;
-  height: min(12rem, 31%);
-  min-height: 8rem;
+  width: 4.25rem;
+  height: min(12.5rem, 33%);
+  min-height: 8.25rem;
   border: 1px solid rgba(40, 216, 212, 0.3);
   border-radius: 4px 4px 0 0;
   background:
@@ -684,7 +726,7 @@ img {
 }
 
 .door-hotspot--contact {
-  border-color: rgba(183, 242, 109, 0.48);
+  border-color: rgba(183, 242, 109, 0.42);
 }
 
 .gallery-stage--contact {

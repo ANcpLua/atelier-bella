@@ -436,6 +436,10 @@ function GalleryArchitecture({ room }: { room: ExhibitionRoom }) {
   return (
     <>
       <div className="gallery-ceiling" />
+      <div className="gallery-masthead" aria-hidden="true">
+        <strong>Atelier Bella</strong>
+        <span>Online Collection</span>
+      </div>
       <div className="gallery-back-wall">
         <span>{room.title}</span>
       </div>
