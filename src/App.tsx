@@ -10,6 +10,7 @@ import {
 import type { CSSProperties, FormEvent, PointerEvent, TouchEvent } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Watercolor from "@/components/react-bits/watercolor";
+import WarpTwister from "@/components/react-bits/warp-twister";
 import {
   artwork,
   artworkById,
@@ -23,13 +24,13 @@ const roomById = new Map(exhibitionRooms.map((room) => [room.id, room]));
 
 const roomCopy: Record<string, string> = {
   "north-wall":
-    "Die erste Wand zeigt Bellas Avocado-Serie gross, farbig und mit weichem Licht.",
+    "Die erste Wand haengt wie ein warmer Auftakt: Frucht, Farbe und ruhiges Atelierlicht.",
   "side-room":
-    "Studien und Crops lassen Farbe, Pinselspur und Format freier atmen.",
+    "Studien und Crops zeigen Pinselspur, Schichtung und kleine helle Momente.",
   "auction-room":
-    "Jedes Bild bekommt seinen eigenen Kaufweg. Wenn ein Link noch fehlt, geht die Anfrage direkt zu Bella.",
+    "Jedes Bild bleibt einzeln erreichbar. Wenn ein Link noch fehlt, geht die Anfrage direkt zu Bella.",
   "contact-room":
-    "Fuer Auftraege, Besuche oder ein Bild, das du erst kurz besprechen willst.",
+    "Fuer Auftraege, Besuche oder ein Bild, das du in Ruhe besprechen willst.",
 };
 
 function getArtwork(id: string): Artwork {
@@ -45,6 +46,25 @@ function getStatusLabel(status: Artwork["status"]): string {
     case "study":
       return "Studie";
   }
+}
+
+function useMediaQuery(query: string): boolean {
+  const [matches, setMatches] = useState(
+    () => typeof window !== "undefined" && window.matchMedia(query).matches
+  );
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(query);
+
+    const onChange = (event: MediaQueryListEvent) => {
+      setMatches(event.matches);
+    };
+
+    mediaQuery.addEventListener("change", onChange);
+    return () => mediaQuery.removeEventListener("change", onChange);
+  }, [query]);
+
+  return matches;
 }
 
 export default function App() {
@@ -215,6 +235,13 @@ function ExhibitionShell({
   onTouchStart: (event: TouchEvent<HTMLElement>) => void;
   selectedArtwork: Artwork | null;
 }) {
+  const prefersReducedMotion = useMediaQuery(
+    "(prefers-reduced-motion: reduce)"
+  );
+  const canShowDesktopMotion = useMediaQuery("(min-width: 900px)");
+  const showAmbientMotion = !prefersReducedMotion;
+  const showWarpTwister = showAmbientMotion && canShowDesktopMotion;
+
   return (
     <section
       className="exhibition-shell"
@@ -229,20 +256,43 @@ function ExhibitionShell({
       onTouchEnd={onTouchEnd}
       onTouchStart={onTouchStart}
     >
-      <Watercolor
-        className="exhibition-wash"
-        width="100%"
-        height="100%"
-        color1="#0B1E2D"
-        color2="#E64992"
-        saturation={0.78}
-        brightness={0.02}
-        opacity={0.42}
-        speed={0.18}
-        scale={0.9}
-        cursorInteraction
-        cursorIntensity={0.35}
-      />
+      {showAmbientMotion ? (
+        <Watercolor
+          className="exhibition-wash"
+          width="100%"
+          height="100%"
+          color1="#3A211A"
+          color2="#D976A2"
+          saturation={0.5}
+          brightness={0.08}
+          opacity={0.34}
+          speed={0.16}
+          scale={0.72}
+          cursorInteraction={canShowDesktopMotion}
+          cursorIntensity={0.18}
+        />
+      ) : null}
+
+      {showWarpTwister ? (
+        <WarpTwister
+          className="exhibition-twister"
+          radius={1.65}
+          narrow={2.35}
+          length={8.2}
+          hazeSpeed={0.18}
+          dustSpeed={0.12}
+          hazeStrength={0.16}
+          hazeFrequency={34}
+          dustDensity={155}
+          dustSize={48}
+          dustOpacity={0.055}
+          edgeFade={2.4}
+          spiralTight={0.18}
+          rotSpeed={0.026}
+          baseColor={[0.86, 0.55, 0.36]}
+          cameraDistance={9.6}
+        />
+      ) : null}
 
       <div
         className={`exhibition-layout exhibition-layout--${activeRoom.purpose}`}
@@ -421,7 +471,7 @@ function GalleryArchitecture() {
       <div className="gallery-ceiling" />
       <div className="gallery-masthead" aria-hidden="true">
         <strong>Atelier Bella</strong>
-        <span>Online Collection</span>
+        <span>Online Atelier</span>
       </div>
       <div className="gallery-back-wall" aria-hidden="true" />
       <div className="gallery-side-wall gallery-side-wall--left" />
