@@ -90,13 +90,12 @@ Set them in `.env.local` locally.
 
 ## Deployment
 
-> **Status:** the repo is now **private**, so GitHub Pages (free plan) no longer
-> serves the site, and `deploy-pages.yml` will no longer publish. Hosting
-> migration to a host that builds private repos for free (Cloudflare Pages /
-> Netlify / Vercel) is pending.
-
-GitHub Pages via `.github/workflows/deploy-pages.yml` on push to `main` (or
-manual `workflow_dispatch`):
+Live at **`https://atelierbella.art/`** (custom domain). The repo is **private**
+but the Pages site is **public** — only the compiled `dist/` bundle is published,
+never the licensed source — and the account's plan supports Pages from a private
+repo, so this keeps working. GitHub Pages via
+`.github/workflows/deploy-pages.yml` on push to `main` (or manual
+`workflow_dispatch`):
 
 - Node 24, `npm ci`, `npm run build` → uploads `dist/` as the Pages artifact.
 - The 8 `VITE_ARTWORK_*_PAYMENT_LINK` values are injected from GitHub repo
