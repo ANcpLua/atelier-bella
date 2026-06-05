@@ -1,18 +1,7 @@
-import {
-  ArrowRight,
-  Brush,
-  CalendarDays,
-  Frame,
-  GalleryHorizontal,
-  Image,
-  Mail,
-  Send,
-  ShoppingBag,
-} from "lucide-react";
+import { ArrowRight, Mail, ShoppingBag } from "lucide-react";
 import type { FormEvent } from "react";
 import { useState } from "react";
 import AnimatedList from "@/components/react-bits/animated-list";
-import HoverPreview from "@/components/react-bits/hover-preview";
 import InfiniteGallery from "@/components/react-bits/infinite-gallery";
 import ParallaxCarousel from "@/components/react-bits/parallax-carousel";
 import PixelReveal from "@/components/react-bits/pixel-reveal";
@@ -21,29 +10,29 @@ import { avocadoCheckout, hasAvocadoPaymentLink } from "@/data/checkout";
 import {
   artwork,
   heroArtwork,
-  landscapeFourByThreeArtwork,
+  landscapeThreeByTwoArtwork,
   portraitFourByFiveArtwork,
-  portraitThreeByFourArtwork,
   processArtwork,
   squareArtwork,
+  wideArtwork,
 } from "@/data/artwork";
 
 const processSteps = [
   {
     title: "Skizze",
-    body: "Ein kurzer Aufbau legt Licht, Blickrichtung und die grobe Spannung im Motiv fest.",
+    body: "Licht, Richtung, Spannung.",
   },
   {
     title: "Farbe",
-    body: "Kalte Blauwerte, saftiges Gruen und pinke Flaechen werden direkt gegeneinander gesetzt.",
+    body: "Pink, Blau, Gruen, Gelb.",
   },
   {
-    title: "Schichtung",
-    body: "Sichtbare Striche bleiben stehen, damit Oberflaeche und Material nicht glatt poliert wirken.",
+    title: "Spur",
+    body: "Pinselstriche bleiben sichtbar.",
   },
   {
     title: "Finish",
-    body: "Kanten, Schatten und Akzente werden reduziert, bis das Bild im Raum ruhig stehen kann.",
+    body: "Nur was das Bild braucht.",
   },
 ];
 
@@ -61,50 +50,23 @@ const processListItems = processSteps.map((step, index) => ({
 const commissionCards = [
   {
     title: "Originale",
-    body: "Einzelstuecke aus laufenden Serien, inklusive Formatberatung und Versandabstimmung.",
-    icon: Image,
+    body: "Einzelstuecke aus laufenden Serien.",
+    artwork: squareArtwork,
   },
   {
-    title: "Auftragsarbeit",
-    body: "Stillleben oder Motividee nach persoenlichem Briefing, mit klarer Skizzenfreigabe.",
-    icon: Brush,
+    title: "Auftrag",
+    body: "Ein Motiv nach kurzem Briefing.",
+    artwork: portraitFourByFiveArtwork,
   },
   {
-    title: "Prints und Drops",
-    body: "Limitierte Editionsflaechen fuer kleinere Raeume, Social-Formate und Sammlungen.",
-    icon: Frame,
+    title: "Prints",
+    body: "Kleine Formate und Drops.",
+    artwork: landscapeThreeByTwoArtwork,
   },
   {
-    title: "Atelierbesuch",
-    body: "Ruhiger Termin zum Sehen, Vergleichen und Auswaehlen verfuegbarer Arbeiten.",
-    icon: CalendarDays,
-  },
-];
-
-const previewLinks = [
-  {
-    text: "Stillleben",
-    linkUrl: "#gallery",
-    imageUrl: squareArtwork.src,
-    altText: squareArtwork.title,
-  },
-  {
-    text: "Originale",
-    linkUrl: "#featured",
-    imageUrl: portraitThreeByFourArtwork.src,
-    altText: portraitThreeByFourArtwork.title,
-  },
-  {
-    text: "Auftrag",
-    linkUrl: "#commissions",
-    imageUrl: portraitFourByFiveArtwork.src,
-    altText: portraitFourByFiveArtwork.title,
-  },
-  {
-    text: "Atelier",
-    linkUrl: "#process",
-    imageUrl: landscapeFourByThreeArtwork.src,
-    altText: landscapeFourByThreeArtwork.title,
+    title: "Besuch",
+    body: "Arbeiten vor Ort ansehen.",
+    artwork: wideArtwork,
   },
 ];
 
@@ -209,9 +171,7 @@ function HeroSection() {
             Atelier Bella
           </h1>
           <p className="text-atelier-muted mt-6 max-w-xl text-lg leading-8 md:text-xl">
-            Farbe, Struktur und Originale: expressive Stillleben und
-            Auftragsarbeiten mit kraeftiger Farbe, sichtbarer Textur und
-            persoenlicher Handschrift.
+            Farbstarke Stillleben, Originale und Auftraege.
           </p>
           <div className="mt-9 flex flex-wrap gap-3">
             <a className="primary-cta" href="#buy">
@@ -283,24 +243,6 @@ function GallerySection() {
           className="h-full"
         />
       </div>
-
-      <div className="border-atelier-glass mt-14 border-y py-8">
-        <HoverPreview
-          content="Serien ansehen: {0}, {1}, {2}, {3}."
-          targets={previewLinks}
-          imagePosition="right"
-          imageWidth={300}
-          imageHeight={220}
-          imageBorderRadius="8px"
-          className="text-atelier-cream font-serif text-3xl leading-tight md:text-5xl"
-          targetClassName="text-atelier-green hover:text-atelier-pink"
-          onTargetClick={(target) => {
-            if (target.linkUrl) {
-              window.location.href = target.linkUrl;
-            }
-          }}
-        />
-      </div>
     </section>
   );
 }
@@ -322,13 +264,11 @@ function BuySection() {
           <p className="section-kicker text-atelier-green">Direktkauf</p>
           <h2 className="section-title mt-4">{avocadoCheckout.title}</h2>
           <p className="text-atelier-muted mt-5 max-w-xl text-lg leading-8">
-            Digitaler Avocado-Kunstdruck aus Bellas farbstarkem Stillleben:
-            sichtbare Pinselstruktur, leuchtende Gelb-Gruen-Werte und ein
-            dunkler Galerierahmen fuer den direkten ersten Drop.
+            Der erste digitale Drop aus Bellas Avocado-Serie.
           </p>
           <div className="buy-meta">
             <span>{avocadoCheckout.priceLabel}</span>
-            <span>Einmalzahlung via Stripe</span>
+            <span>Stripe Checkout</span>
           </div>
           {hasAvocadoPaymentLink ? (
             <a
@@ -337,18 +277,17 @@ function BuySection() {
               rel="noreferrer"
               target="_blank"
             >
-              Jetzt kaufen
+              Kaufen
               <ShoppingBag size={18} />
             </a>
           ) : (
             <a className="primary-cta pending-cta" href="#contact">
-              Stripe-Link fehlt
+              Checkout folgt
               <Mail size={18} />
             </a>
           )}
           <p className="text-atelier-muted mt-4 text-sm leading-6">
-            Der Checkout wird als Stripe Payment Link geoeffnet, sobald der
-            Live-Link mit Schreibrechten erstellt wurde.
+            Sichere Zahlung ueber Stripe.
           </p>
         </div>
       </div>
@@ -362,12 +301,9 @@ function ProcessSection() {
       <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
         <div>
           <p className="section-kicker text-atelier-green">Atelier</p>
-          <h2 className="section-title mt-4">
-            Handarbeit mit sichtbarer Entscheidung.
-          </h2>
+          <h2 className="section-title mt-4">Direkt am Material.</h2>
           <p className="text-atelier-muted mt-5 max-w-xl text-lg leading-8">
-            Jede Arbeit bleibt nah am Material: Pinselspur, Schichtung und
-            kleine Kanten sind Teil des Bildes, nicht Stoerung.
+            Pinselspur, Schichtung und kleine Kanten bleiben Teil des Bildes.
           </p>
           <div className="border-atelier-glass mt-8 overflow-hidden border">
             <img
@@ -402,21 +338,23 @@ function CommissionsSection() {
     <section id="commissions" className="section-shell bg-atelier-ink">
       <div className="section-heading">
         <p className="section-kicker text-atelier-pink">Auftraege</p>
-        <h2 className="section-title">
-          Klarer Weg zum Original, ohne Template-Gefuehl.
-        </h2>
+        <h2 className="section-title">Originale, Auftraege, Besuche.</h2>
       </div>
 
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-        {commissionCards.map((card) => {
-          const Icon = card.icon;
-
+        {commissionCards.map((card, index) => {
           return (
             <article className="service-card" key={card.title}>
-              <div className="service-icon">
-                <Icon size={22} />
+              <div className="service-mark">
+                <img
+                  src={card.artwork.src}
+                  alt=""
+                  width={card.artwork.width}
+                  height={card.artwork.height}
+                />
               </div>
-              <h3 className="text-atelier-cream mt-6 text-xl font-semibold">
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <h3 className="text-atelier-cream mt-4 text-xl font-semibold">
                 {card.title}
               </h3>
               <p className="text-atelier-muted mt-3 text-sm leading-6">
@@ -445,17 +383,10 @@ function ContactSection({
       <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
         <div>
           <p className="section-kicker text-atelier-turquoise">Kontakt</p>
-          <h2 className="section-title mt-4">
-            Schreib kurz, welches Bild im Raum stehen soll.
-          </h2>
+          <h2 className="section-title mt-4">Schreib Bella.</h2>
           <p className="text-atelier-muted mt-5 max-w-xl text-lg leading-8">
-            Fuer Originale, Auftragsarbeiten oder Ateliertermine reicht ein
-            kurzer Einstieg. Details klaeren wir danach direkt.
+            Format, Raum, Motiv oder Besuchstermin reichen als Einstieg.
           </p>
-          <div className="text-atelier-green mt-8 flex items-center gap-3">
-            <GalleryHorizontal size={20} />
-            <span className="font-medium">Antwort mit Formatvorschlag</span>
-          </div>
         </div>
 
         <form className="contact-form" onSubmit={onSubmit}>
@@ -471,9 +402,9 @@ function ContactSection({
             Anfrage
             <select name="request" defaultValue="Original">
               <option>Original</option>
-              <option>Auftragsarbeit</option>
+              <option>Auftrag</option>
               <option>Prints</option>
-              <option>Atelierbesuch</option>
+              <option>Besuch</option>
             </select>
           </label>
           <label>
@@ -487,12 +418,11 @@ function ContactSection({
           </label>
           <button className="primary-cta w-full justify-center" type="submit">
             Anfrage senden
-            <Send size={18} />
+            <ArrowRight size={18} />
           </button>
           {formState === "sent" ? (
             <p className="text-atelier-green text-sm font-medium">
-              Anfrage notiert. Der naechste Schritt ist ein persoenliches
-              Briefing.
+              Anfrage notiert. Bella meldet sich direkt.
             </p>
           ) : null}
         </form>

@@ -14,8 +14,9 @@
   --color-atelier-cream: #f7f3ea;
   --color-atelier-muted: #a9bbc4;
   --color-atelier-glass: rgba(247, 243, 234, 0.14);
-  --font-serif: "Fraunces", ui-serif, Georgia, serif;
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif:
+    "Iowan Old Style", Palatino, "Palatino Linotype", Georgia, serif;
+  --font-sans: "Avenir Next", "Helvetica Neue", Arial, sans-serif;
   --shadow-atelier-glow: 0 0 80px rgba(40, 216, 212, 0.18);
 }
 
@@ -68,8 +69,8 @@ img {
 }
 
 ::selection {
-  background: #e64992;
-  color: #071016;
+  background: rgba(183, 242, 109, 0.24);
+  color: #f7f3ea;
 }
 
 .skip-link {
@@ -442,19 +443,31 @@ img {
   }
 }
 
-.service-icon {
-  display: inline-flex;
-  width: 3rem;
-  height: 3rem;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(40, 216, 212, 0.35);
-  border-radius: 999px;
-  color: #28d8d4;
-}
-
 .service-card {
   padding: 1.4rem;
+}
+
+.service-card > span {
+  display: block;
+  margin-top: 1rem;
+  color: #b7f26d;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.service-mark {
+  aspect-ratio: 5 / 3;
+  overflow: hidden;
+  border: 1px solid rgba(247, 243, 234, 0.14);
+  border-radius: 8px;
+  background: #071016;
+}
+
+.service-mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .contact-form {
