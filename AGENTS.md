@@ -1,34 +1,30 @@
 # Atelier Bella (`chromatic-atelier`)
 
-A single-page React storefront for a painterly online atelier: a hero, themed
-exhibition rooms, an artwork gallery, and per-artwork "digital-auction" cards
-that link out to payment links. Static SPA — no backend, no SSR.
+A small single-page React storefront for the painter **Atelier Bella**: a
+full-screen WebGL hero, then a clean gallery of original works with inquire/buy
+links. Static SPA — no backend, no SSR. Live at **https://atelierbella.art/**.
 
-> **Private repo — keep it private.** `src/components/react-bits/` contains
-> licensed React Bits Starter source; making this repository public would
-> violate the React Bits license.
+> **Private repo — keep it private.**
+> `src/components/react-bits/swirl-blend.tsx` is licensed React Bits Starter
+> source; making this repository public would violate the React Bits license.
 
 ## Stack
 
-- **Vite 7** + **React 19** + **TypeScript** (ESM, `"type": "module"`)
-- **Tailwind CSS v4** via `@tailwindcss/vite` — single stylesheet at
-  `src/styles/atelier.css` (no `tailwind.config`; CSS-first config + `cssVariables`)
-- **three** + **@react-three/fiber**, **motion**, **gsap** — WebGL / animation
-- **lucide-react** — icons
-- **React Bits Pro** (`@reactbits-starter` registry only) — see "React Bits" below
+- **Vite 7** + **React 19** + **TypeScript** (ESM)
+- **Tailwind CSS v4** via `@tailwindcss/vite` — one stylesheet
+  `src/styles/atelier.css` (no `tailwind.config`; CSS-first + design tokens)
+- **three** + **@react-three/fiber** — only for the hero shader
 
 ## Commands
 
-| Command                | What it does                                            |
-| ---------------------- | ------------------------------------------------------- |
-| `npm run dev`          | Vite dev server                                         |
-| `npm run build`        | `tsc -b && vite build` — **typecheck is part of build** |
-| `npm run preview`      | Serve the production `dist/`                            |
-| `npm run typecheck`    | `tsc -b --noEmit`                                       |
-| `npm run lint`         | ESLint (`eslint .`)                                     |
-| `npm run lint:fix`     | ESLint with `--fix`                                     |
-| `npm run format`       | Prettier write                                          |
-| `npm run format:check` | Prettier check (CI-style)                               |
+| Command                           | What it does                                            |
+| --------------------------------- | ------------------------------------------------------- |
+| `npm run dev`                     | Vite dev server                                         |
+| `npm run build`                   | `tsc -b && vite build` — **typecheck is part of build** |
+| `npm run preview`                 | Serve the production `dist/`                            |
+| `npm run typecheck`               | `tsc -b --noEmit`                                       |
+| `npm run lint` / `lint:fix`       | ESLint                                                  |
+| `npm run format` / `format:check` | Prettier                                                |
 
 A type error fails `build`, which fails the Pages deploy. Run `typecheck`
 before pushing.
@@ -37,75 +33,60 @@ before pushing.
 
 ```
 index.html              # SPA entry
-src/main.tsx            # mounts <App/> into #root, imports atelier.css
-src/App.tsx             # the entire SPA (hero, rooms, gallery, cards, checkout)
-src/data/artwork.ts     # Artwork / ExhibitionRoom models + payment-link wiring
-src/components/react-bits/   # animated components (see React Bits)
+src/main.tsx            # Landing: toggles hero <-> gallery via local state
+src/SwirlHero.tsx       # full-screen WebGL hero + FARBWELT palette switcher
+src/Gallery.tsx         # editorial masonry gallery + contact section
+src/data/site.ts        # EDITABLE CONTENT: brand, copy, contact email (base64)
+src/data/artwork.ts     # EDITABLE WORKS: the artworks (forgiving schema)
+src/components/react-bits/swirl-blend.tsx  # the hero shader (licensed)
 src/lib/utils.ts        # cn() helper (clsx + tailwind-merge)
-src/styles/atelier.css  # Tailwind v4 entry + all design tokens
-public/artwork/         # artwork image assets, referenced directly by URL
+src/styles/atelier.css  # Tailwind v4 entry + tokens + reduced-motion baseline
+public/artwork/         # artwork images (.webp), referenced by URL
 ```
 
-## Conventions
+## Editing content (config-driven)
 
-- **Import alias:** `@/*` → `src/*` (defined in both `vite.config.ts` and
-  `tsconfig.app.json` — keep them in sync if you change it).
-- **TypeScript:** strict project-references build (`tsc -b`). Prefer `type`
-  imports; the codebase exports component prop types (e.g. `WatercolorProps`).
-- **Styling:** Tailwind v4 utilities + design tokens in `atelier.css`. There is
-  no JS theme config — adjust tokens in the stylesheet, not a config file.
-- **Formatting/lint:** Prettier + ESLint flat config (`eslint.config.mjs`) are
-  the source of truth. Don't hand-format; run `lint:fix` / `format`.
+- **Text / contact:** `src/data/site.ts` — brand, hero/gallery/about copy,
+  footer. The contact email is stored **base64** and decoded only on a user
+  click ("E-Mail anzeigen") so it is not a scrapeable plain string.
+- **Artworks:** `src/data/artwork.ts` — one array; only `id`/`title`/`src` are
+  required, the rest defaults. See the "HOW TO ADD A REAL WORK" header. A work
+  is buyable when `status:"available"` **and** it has a `paymentLink` (Stripe);
+  otherwise its card links through to the contact section ("Anfragen →").
+- **Images:** drop a photo in `public/artwork/`, convert to `.webp` (long edge
+  ~1600px, q≈84), then reference it from `artwork.ts`.
+
+## Conventions / accessibility
+
+- **Alias:** `@/*` → `src/*` (defined in `vite.config.ts`, `tsconfig.app.json`,
+  and the root `tsconfig.json` `paths` so the shadcn CLI resolves it too).
+- **Accessibility is a requirement:** semantic landmarks, descriptive `alt`,
+  visible focus rings, `aria-pressed` on the palette, a skip link,
+  `prefers-reduced-motion` (the shader freezes), image `aspect-ratio` (no CLS).
+- **Styling:** Tailwind v4 utilities + tokens in `atelier.css`. Don't hand-format
+  — run `format` / `lint:fix`.
+- **Button text gotcha:** a global unlayered `button { color: inherit }` beats
+  Tailwind text-colour utilities, so set button text colour via inline `style`
+  (see the hero CTA and "E-Mail anzeigen") when the button is on a light
+  background.
 
 ## React Bits
 
-`components.json` is wired to **`@reactbits-starter` only** (100 animated
-components; the `@reactbits-pro` block registry is _not_ configured). The full
-usage reference lives in **`SKILL.md`** at the repo root — read it before
-adding or troubleshooting React Bits components instead of duplicating it here.
-
-Project-specific notes (the SKILL.md is written Next.js-first; this is Vite):
-
-- **No `next/dynamic`** — lazy-load heavy WebGL components with `React.lazy` +
-  `<Suspense>`, not `next/dynamic`.
-- **No `next-themes`** — theming is custom via `atelier.css`, not a theme
-  provider.
-- **`"use client"` is a harmless no-op** here (Vite ignores it). Leave it in
-  installed files; don't add it to your own.
-- `src/components/react-bits/` already holds the **real, licensed Starter
-  components** (e.g. `watercolor`, `warp-twister`) — verified ~95–100% identical
-  to the registry source, just Prettier-reformatted. They are NOT placeholders;
-  don't "replace" them. This premium source is why the repo is private.
-- License key: `REACTBITS_LICENSE_KEY` in `.env.local` (gitignored). Install
-  with `npx shadcn@latest add @reactbits-starter/<slug>-tw`.
-
-## Artwork & payment links
-
-`src/data/artwork.ts` is the single source for artwork metadata, exhibition
-rooms, and pricing. Each sellable piece (`saleMode: "digital-auction"`) maps to
-a build-time env var `VITE_ARTWORK_01_PAYMENT_LINK` … `_08_`. Because Vite
-inlines every `VITE_`-prefixed var into the client bundle, **these payment
-links are intentionally public** (e.g. Stripe Payment Links) — not secrets.
-Set them in `.env.local` locally.
+Only **`swirl-blend`** is used (the hero shader). `components.json` is wired to
+`@reactbits-starter` only; the full vendor reference is **`SKILL.md`** at the
+repo root. Add more with `npx shadcn@latest add @reactbits-starter/<slug>-tw`
+(needs `REACTBITS_LICENSE_KEY` in `.env.local`). SKILL.md is Next.js-first —
+this is Vite: no `next/dynamic` (use `React.lazy`); `"use client"` is a no-op.
 
 ## Deployment
 
-Live at **`https://atelierbella.art/`** (custom domain). The repo is **private**
-but the Pages site is **public** — only the compiled `dist/` bundle is published,
-never the licensed source — and the account's plan supports Pages from a private
-repo, so this keeps working. GitHub Pages via
-`.github/workflows/deploy-pages.yml` on push to `main` (or manual
-`workflow_dispatch`):
-
-- Node 24, `npm ci`, `npm run build` → uploads `dist/` as the Pages artifact.
-- The 8 `VITE_ARTWORK_*_PAYMENT_LINK` values are injected from GitHub repo
-  **Variables** (`vars`), not Secrets — consistent with them being public.
-- `vite.config.ts` sets `base: "./"` so the build works under the Pages
-  subpath. `manualChunks` splits `three` / `motion` / `react` for caching.
+GitHub Pages via `.github/workflows/deploy-pages.yml` on push to `main` (or
+`workflow_dispatch`). Custom domain **`atelierbella.art`** (`public/CNAME`). The
+repo is **private**, the Pages site is **public** — only the compiled `dist/`
+ships, never source. `vite.config.ts` sets `base: "./"` and splits the
+`three` / `react` chunks for caching.
 
 ## Secrets
 
-- `.env.local` (gitignored) holds `REACTBITS_LICENSE_KEY` and the local payment
-  links. **Never commit it.**
-- The license key is the only true secret here and must stay out of CI vars and
-  the client bundle.
+`.env.local` (gitignored) holds `REACTBITS_LICENSE_KEY` — the only true secret.
+Keep it out of the repo and the client bundle.

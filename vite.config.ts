@@ -11,7 +11,6 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          motion: ["motion"],
           react: ["react", "react-dom"],
           three: ["three", "@react-three/fiber"],
         },

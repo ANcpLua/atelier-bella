@@ -32,15 +32,6 @@ jobs:
         run: npm ci
 
       - name: Build
-        env:
-          VITE_ARTWORK_01_PAYMENT_LINK: ${{ vars.VITE_ARTWORK_01_PAYMENT_LINK }}
-          VITE_ARTWORK_02_PAYMENT_LINK: ${{ vars.VITE_ARTWORK_02_PAYMENT_LINK }}
-          VITE_ARTWORK_03_PAYMENT_LINK: ${{ vars.VITE_ARTWORK_03_PAYMENT_LINK }}
-          VITE_ARTWORK_04_PAYMENT_LINK: ${{ vars.VITE_ARTWORK_04_PAYMENT_LINK }}
-          VITE_ARTWORK_05_PAYMENT_LINK: ${{ vars.VITE_ARTWORK_05_PAYMENT_LINK }}
-          VITE_ARTWORK_06_PAYMENT_LINK: ${{ vars.VITE_ARTWORK_06_PAYMENT_LINK }}
-          VITE_ARTWORK_07_PAYMENT_LINK: ${{ vars.VITE_ARTWORK_07_PAYMENT_LINK }}
-          VITE_ARTWORK_08_PAYMENT_LINK: ${{ vars.VITE_ARTWORK_08_PAYMENT_LINK }}
         run: npm run build
 
       - name: Upload artifact
