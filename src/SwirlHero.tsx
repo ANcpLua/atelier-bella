@@ -1,5 +1,6 @@
 import { useState } from "react";
 import SwirlBlend from "@/components/react-bits/swirl-blend";
+import { siteConfig } from "@/data/site";
 
 type Palette = {
   id: string;
@@ -98,14 +99,13 @@ export default function SwirlHero({ onEnter }: { onEnter?: () => void }) {
 
       <div className="absolute inset-0 flex flex-col justify-center px-[7vw]">
         <p className="mb-5 text-sm font-medium tracking-[0.35em] text-white/75 uppercase">
-          Online Atelier
+          {siteConfig.hero.eyebrow}
         </p>
         <h1 className="max-w-[16ch] text-5xl leading-[1.02] font-semibold tracking-tight text-white sm:text-6xl md:text-8xl">
-          Atelier Bella
+          {siteConfig.hero.title}
         </h1>
         <p className="mt-7 max-w-[42ch] text-lg text-white/85 md:text-xl">
-          Malerei, die atmet — Farbwelten zum Mitnehmen, jede Leinwand ein
-          eigenes Licht.
+          {siteConfig.hero.subline}
         </p>
         <button
           type="button"
@@ -113,7 +113,7 @@ export default function SwirlHero({ onEnter }: { onEnter?: () => void }) {
           style={{ color: "#0a0a0a" }}
           className={`mt-10 inline-flex w-fit items-center gap-2 rounded-full bg-white/95 px-7 py-3 text-sm font-semibold tracking-wide transition hover:bg-white ${FOCUS}`}
         >
-          Zur Ausstellung →
+          {siteConfig.hero.cta} →
         </button>
       </div>
 

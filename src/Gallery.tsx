@@ -1,4 +1,5 @@
 import { artwork, type Artwork } from "@/data/artwork";
+import { siteConfig } from "@/data/site";
 
 const STATUS: Record<Artwork["status"], string> = {
   available: "Verfügbar",
@@ -12,6 +13,9 @@ const FOCUS =
 function Piece({ art }: { art: Artwork }) {
   const buyable = art.status === "available" && art.paymentLink !== "";
   const Wrapper = buyable ? "a" : "div";
+  const meta = [art.format, art.size, art.priceLabel]
+    .filter(Boolean)
+    .join(" · ");
 
   return (
     <figure className="group relative mb-6 break-inside-avoid overflow-hidden rounded-2xl bg-white/5 ring-1 ring-white/10">
@@ -28,10 +32,18 @@ function Piece({ art }: { art: Artwork }) {
       >
         <img
           src={art.src}
-          alt={`„${art.title}“ — ${art.format}-Gemälde, ${art.size}`}
+          alt={
+            art.size
+              ? `„${art.title}“ — ${art.format}, ${art.size}`
+              : `„${art.title}“ — ${art.format}`
+          }
           loading="lazy"
           decoding="async"
-          style={{ aspectRatio: `${art.width} / ${art.height}` }}
+          style={
+            art.width && art.height
+              ? { aspectRatio: `${art.width} / ${art.height}` }
+              : undefined
+          }
           className="block h-auto w-full transition duration-500 ease-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
         />
 
@@ -52,9 +64,7 @@ function Piece({ art }: { art: Artwork }) {
               <h3 className="truncate text-lg font-semibold text-white">
                 {art.title}
               </h3>
-              <p className="text-sm text-white/60">
-                {art.format} · {art.size} · {art.priceLabel}
-              </p>
+              <p className="text-sm text-white/60">{meta}</p>
             </div>
             <span className="shrink-0 text-sm font-semibold whitespace-nowrap text-white">
               {buyable ? "Kaufen →" : "Atelier →"}
@@ -88,7 +98,7 @@ export default function Gallery({ onBack }: { onBack?: () => void }) {
           >
             ←
           </span>
-          Atelier Bella
+          {siteConfig.brand}
         </button>
         <span className="text-xs font-medium tracking-[0.3em] text-white/40 uppercase">
           Online Atelier
@@ -98,15 +108,14 @@ export default function Gallery({ onBack }: { onBack?: () => void }) {
       <main id="werke">
         <section className="px-[6vw] pt-10 pb-16">
           <p className="mb-3 text-sm font-medium tracking-[0.35em] text-white/50 uppercase">
-            Ausstellung
+            {siteConfig.gallery.eyebrow}
           </p>
           <div className="flex flex-wrap items-end justify-between gap-6">
             <h1 className="text-5xl font-semibold tracking-tight md:text-7xl">
-              Werke
+              {siteConfig.gallery.title}
             </h1>
             <p className="max-w-[34ch] text-white/55">
-              {artwork.length} Originale — Öl &amp; Studie. Jedes Bild als
-              digitale Edition erhältlich.
+              {artwork.length} {siteConfig.gallery.intro}
             </p>
           </div>
         </section>
@@ -124,30 +133,27 @@ export default function Gallery({ onBack }: { onBack?: () => void }) {
         aria-labelledby="kontakt-title"
       >
         <p className="mb-3 text-sm font-medium tracking-[0.35em] text-white/50 uppercase">
-          Kontakt
+          {siteConfig.about.eyebrow}
         </p>
         <h2
           id="kontakt-title"
           className="text-4xl font-semibold tracking-tight"
         >
-          Über das Atelier
+          {siteConfig.about.title}
         </h2>
         <p className="mt-6 max-w-[60ch] text-lg leading-relaxed text-white/70">
-          Atelier Bella ist ein kleines Online-Atelier für farbstarke Stillleben
-          — Öl, sichtbare Textur, klare Farbwelten. Originale und
-          Auftragsarbeiten entstehen auf Anfrage. Schreib mir gern, wenn dich
-          ein Werk interessiert oder du eine Idee mitbringst.
+          {siteConfig.about.body}
         </p>
         <a
-          href="mailto:anfh22@outlook.com?subject=Anfrage%20Atelier%20Bella"
+          href={`mailto:${siteConfig.contactEmail}?subject=Anfrage%20Atelier%20Bella`}
           className={`mt-8 inline-flex w-fit items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-semibold tracking-wide text-black transition hover:bg-white/90 ${FOCUS}`}
         >
-          Schreib dem Atelier →
+          {siteConfig.about.cta} →
         </a>
       </section>
 
       <footer className="border-t border-white/10 px-[6vw] py-10 text-sm text-white/45">
-        Atelier Bella · Online Atelier — Malerei von Bella.
+        {siteConfig.footer}
       </footer>
     </div>
   );

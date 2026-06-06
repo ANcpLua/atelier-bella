@@ -1,59 +1,69 @@
+// ─────────────────────────────────────────────────────────────────────────
+// HOW TO ADD A REAL WORK
+//   1. Put the photo in  public/artwork/  (any size — we convert to .webp).
+//   2. Add an entry to `works` below. Only `id`, `title` and `src` are required.
+//   3. To sell it: set `status: "available"` and either
+//        • paste a Stripe Payment Link as `paymentLink` (these are public), or
+//        • set a VITE_…_PAYMENT_LINK env var and reference it via `paymentEnvKey`.
+//   Everything else has sensible defaults. `width`/`height` are optional — set
+//   them (intrinsic px) to avoid layout shift while the image loads.
+// ─────────────────────────────────────────────────────────────────────────
+
 export type ArtworkStatus = "available" | "commission" | "study";
 
-export type PaymentEnvKey =
-  | "VITE_ARTWORK_01_PAYMENT_LINK"
-  | "VITE_ARTWORK_02_PAYMENT_LINK"
-  | "VITE_ARTWORK_03_PAYMENT_LINK"
-  | "VITE_ARTWORK_04_PAYMENT_LINK"
-  | "VITE_ARTWORK_05_PAYMENT_LINK"
-  | "VITE_ARTWORK_06_PAYMENT_LINK"
-  | "VITE_ARTWORK_07_PAYMENT_LINK"
-  | "VITE_ARTWORK_08_PAYMENT_LINK";
+type WorkInput = {
+  id: string;
+  title: string;
+  src: string;
+  status?: ArtworkStatus;
+  priceLabel?: string;
+  format?: string;
+  size?: string;
+  accent?: string;
+  copy?: string;
+  width?: number;
+  height?: number;
+  paymentLink?: string;
+  paymentEnvKey?: string;
+};
 
 export type Artwork = {
   id: string;
   title: string;
+  src: string;
+  status: ArtworkStatus;
+  priceLabel: string;
   format: string;
   size: string;
-  src: string;
-  width: number;
-  height: number;
-  status: ArtworkStatus;
   accent: string;
-  editionLabel: string;
-  saleMode: "digital-auction";
-  priceLabel: string;
-  paymentEnvKey: PaymentEnvKey;
-  paymentLink: string;
   copy: string;
+  width?: number;
+  height?: number;
+  paymentLink: string;
 };
 
-export type ExhibitionRoom = {
-  id: string;
-  title: string;
-  kicker: string;
-  artworkIds: string[];
-  nextRoomId: string | null;
-  previousRoomId: string | null;
-  purpose: "gallery" | "buy" | "contact";
-};
-
-function resolvePaymentLink(paymentEnvKey: PaymentEnvKey): string {
-  return import.meta.env[paymentEnvKey] ?? "";
-}
-
-function defineArtwork(
-  piece: Omit<Artwork, "saleMode" | "paymentLink">
-): Artwork {
+function defineWork(w: WorkInput): Artwork {
   return {
-    ...piece,
-    saleMode: "digital-auction",
-    paymentLink: resolvePaymentLink(piece.paymentEnvKey),
+    id: w.id,
+    title: w.title,
+    src: w.src,
+    status: w.status ?? "available",
+    priceLabel: w.priceLabel ?? "Preis auf Anfrage",
+    format: w.format ?? "Gemälde",
+    size: w.size ?? "",
+    accent: w.accent ?? "#e2683a",
+    copy: w.copy ?? "",
+    width: w.width,
+    height: w.height,
+    paymentLink:
+      w.paymentLink ??
+      (w.paymentEnvKey ? (import.meta.env[w.paymentEnvKey] ?? "") : ""),
   };
 }
 
-export const artwork: Artwork[] = [
-  defineArtwork({
+// Placeholder set (one real motif, varied crops) — swap for real photos.
+const works: WorkInput[] = [
+  {
     id: "avocado-01",
     title: "Avocado Stillleben I",
     format: "Square",
@@ -63,12 +73,11 @@ export const artwork: Artwork[] = [
     height: 1254,
     status: "available",
     accent: "#B7F26D",
-    editionLabel: "Edition 01",
     priceLabel: "ab 5 EUR",
     paymentEnvKey: "VITE_ARTWORK_01_PAYMENT_LINK",
-    copy: "Das zentrale Motiv als konzentrierter Einstieg in Bellas digitale Avocado-Serie.",
-  }),
-  defineArtwork({
+    copy: "Das zentrale Motiv als konzentrierter Einstieg in Bellas Avocado-Serie.",
+  },
+  {
     id: "avocado-02",
     title: "Pink Ground Study",
     format: "Portrait",
@@ -78,12 +87,11 @@ export const artwork: Artwork[] = [
     height: 1536,
     status: "study",
     accent: "#E64992",
-    editionLabel: "Edition 02",
     priceLabel: "ab 5 EUR",
     paymentEnvKey: "VITE_ARTWORK_02_PAYMENT_LINK",
     copy: "Ein hoher Ausschnitt mit starkem Pink-Grund und dichtem Pinselauftrag.",
-  }),
-  defineArtwork({
+  },
+  {
     id: "avocado-03",
     title: "Lemon and Blue",
     format: "Portrait",
@@ -93,12 +101,11 @@ export const artwork: Artwork[] = [
     height: 1448,
     status: "available",
     accent: "#28D8D4",
-    editionLabel: "Edition 03",
     priceLabel: "ab 5 EUR",
     paymentEnvKey: "VITE_ARTWORK_03_PAYMENT_LINK",
     copy: "Avocado, Zitrone und Blau stehen wie drei Lichtquellen im dunklen Raum.",
-  }),
-  defineArtwork({
+  },
+  {
     id: "avocado-04",
     title: "Green Flesh",
     format: "Portrait",
@@ -108,27 +115,25 @@ export const artwork: Artwork[] = [
     height: 1402,
     status: "commission",
     accent: "#9DDC42",
-    editionLabel: "Edition 04",
     priceLabel: "ab 5 EUR",
     paymentEnvKey: "VITE_ARTWORK_04_PAYMENT_LINK",
-    copy: "Nahe am Fruchtfleisch, mit sichtbaren Gruen- und Gelbschichten.",
-  }),
-  defineArtwork({
+    copy: "Nahe am Fruchtfleisch, mit sichtbaren Grün- und Gelbschichten.",
+  },
+  {
     id: "avocado-05",
     title: "A-Series Crop",
     format: "Paper",
-    size: "A-series",
+    size: "A-Serie",
     src: "artwork/05_portrait_a_series_1055x1491.webp",
     width: 1055,
     height: 1491,
     status: "study",
     accent: "#1F6FA8",
-    editionLabel: "Edition 05",
     priceLabel: "ab 5 EUR",
     paymentEnvKey: "VITE_ARTWORK_05_PAYMENT_LINK",
     copy: "Ein papiernaher Ausschnitt, gebaut aus Schichtung, Reibung und Farbe.",
-  }),
-  defineArtwork({
+  },
+  {
     id: "avocado-06",
     title: "Table Light",
     format: "Landscape",
@@ -138,12 +143,11 @@ export const artwork: Artwork[] = [
     height: 1024,
     status: "available",
     accent: "#E64992",
-    editionLabel: "Edition 06",
     priceLabel: "ab 5 EUR",
     paymentEnvKey: "VITE_ARTWORK_06_PAYMENT_LINK",
-    copy: "Breiter Tisch, harte Farbe, viel Raum fuer die Pinselspur.",
-  }),
-  defineArtwork({
+    copy: "Breiter Tisch, harte Farbe, viel Raum für die Pinselspur.",
+  },
+  {
     id: "avocado-07",
     title: "Gallery Crop",
     format: "Landscape",
@@ -153,12 +157,11 @@ export const artwork: Artwork[] = [
     height: 1086,
     status: "commission",
     accent: "#28D8D4",
-    editionLabel: "Edition 07",
     priceLabel: "ab 5 EUR",
     paymentEnvKey: "VITE_ARTWORK_07_PAYMENT_LINK",
-    copy: "Der ruhigere Raum-Crop, gut fuer grossflaechige digitale Haengung.",
-  }),
-  defineArtwork({
+    copy: "Der ruhigere Raum-Crop, gut für großflächige digitale Hängung.",
+  },
+  {
     id: "avocado-08",
     title: "Chromatic Table",
     format: "Wide",
@@ -168,60 +171,10 @@ export const artwork: Artwork[] = [
     height: 941,
     status: "available",
     accent: "#B7F26D",
-    editionLabel: "Edition 08",
     priceLabel: "ab 5 EUR",
     paymentEnvKey: "VITE_ARTWORK_08_PAYMENT_LINK",
-    copy: "Das breiteste Format: ein farbiger Tisch wie eine offene Buehne.",
-  }),
-];
-
-export const exhibitionRooms: ExhibitionRoom[] = [
-  {
-    id: "north-wall",
-    title: "Nordwand",
-    kicker: "Galerie",
-    artworkIds: ["avocado-01", "avocado-03", "avocado-04"],
-    nextRoomId: "side-room",
-    previousRoomId: null,
-    purpose: "gallery",
-  },
-  {
-    id: "side-room",
-    title: "Seitenraum",
-    kicker: "Studien",
-    artworkIds: ["avocado-02", "avocado-05", "avocado-06", "avocado-07"],
-    nextRoomId: "auction-room",
-    previousRoomId: "north-wall",
-    purpose: "gallery",
-  },
-  {
-    id: "auction-room",
-    title: "Digitale Auktion",
-    kicker: "Kaufen",
-    artworkIds: [
-      "avocado-01",
-      "avocado-02",
-      "avocado-03",
-      "avocado-04",
-      "avocado-05",
-      "avocado-06",
-      "avocado-07",
-      "avocado-08",
-    ],
-    nextRoomId: "contact-room",
-    previousRoomId: "side-room",
-    purpose: "buy",
-  },
-  {
-    id: "contact-room",
-    title: "Atelierkontakt",
-    kicker: "Kontakt",
-    artworkIds: ["avocado-08"],
-    nextRoomId: null,
-    previousRoomId: "auction-room",
-    purpose: "contact",
+    copy: "Das breiteste Format: ein farbiger Tisch wie eine offene Bühne.",
   },
 ];
 
-export const artworkById = new Map(artwork.map((piece) => [piece.id, piece]));
-export const heroArtwork = artworkById.get("avocado-08") ?? artwork[0];
+export const artwork: Artwork[] = works.map(defineWork);
