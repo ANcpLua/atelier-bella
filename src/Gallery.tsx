@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { artwork, type Artwork } from "@/data/artwork";
 import { siteConfig } from "@/data/site";
 
@@ -12,24 +13,21 @@ const FOCUS =
 
 function Piece({ art }: { art: Artwork }) {
   const buyable = art.status === "available" && art.paymentLink !== "";
-  const Wrapper = buyable ? "a" : "div";
   const meta = [art.format, art.size, art.priceLabel]
     .filter(Boolean)
     .join(" · ");
+  const link = buyable
+    ? {
+        href: art.paymentLink,
+        target: "_blank",
+        rel: "noopener noreferrer",
+        "aria-label": `${art.title} – ${art.priceLabel} – kaufen (öffnet in neuem Tab)`,
+      }
+    : { href: "#kontakt", "aria-label": `${art.title} – anfragen` };
 
   return (
     <figure className="group relative mb-6 break-inside-avoid overflow-hidden rounded-2xl bg-white/5 ring-1 ring-white/10">
-      <Wrapper
-        {...(buyable
-          ? {
-              href: art.paymentLink,
-              target: "_blank",
-              rel: "noopener noreferrer",
-              "aria-label": `${art.title} – ${art.priceLabel} – kaufen (öffnet in neuem Tab)`,
-            }
-          : {})}
-        className={`block rounded-2xl ${buyable ? FOCUS : ""}`}
-      >
+      <a {...link} className={`block rounded-2xl ${FOCUS}`}>
         <img
           src={art.src}
           alt={
@@ -67,12 +65,46 @@ function Piece({ art }: { art: Artwork }) {
               <p className="text-sm text-white/60">{meta}</p>
             </div>
             <span className="shrink-0 text-sm font-semibold whitespace-nowrap text-white">
-              {buyable ? "Kaufen →" : "Atelier →"}
+              {buyable ? "Kaufen →" : "Anfragen →"}
             </span>
           </div>
         </figcaption>
-      </Wrapper>
+      </a>
     </figure>
+  );
+}
+
+function ContactReveal() {
+  const [email, setEmail] = useState<string | null>(null);
+
+  if (!email) {
+    return (
+      <button
+        type="button"
+        onClick={() => setEmail(atob(siteConfig.contactEmailB64))}
+        style={{ color: "#0a0a0a" }}
+        className={`mt-8 inline-flex w-fit items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-semibold tracking-wide transition hover:bg-white/90 ${FOCUS}`}
+      >
+        E-Mail anzeigen
+      </button>
+    );
+  }
+
+  return (
+    <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
+      <a
+        href={`mailto:${email}?subject=Anfrage%20Atelier%20Bella`}
+        className={`inline-flex w-fit items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-semibold tracking-wide text-black transition hover:bg-white/90 ${FOCUS}`}
+      >
+        {siteConfig.about.cta} →
+      </a>
+      <a
+        href={`mailto:${email}`}
+        className={`rounded text-base text-white/70 underline underline-offset-4 transition hover:text-white ${FOCUS}`}
+      >
+        {email}
+      </a>
+    </div>
   );
 }
 
@@ -144,20 +176,7 @@ export default function Gallery({ onBack }: { onBack?: () => void }) {
         <p className="mt-6 max-w-[60ch] text-lg leading-relaxed text-white/70">
           {siteConfig.about.body}
         </p>
-        <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
-          <a
-            href={`mailto:${siteConfig.contactEmail}?subject=Anfrage%20Atelier%20Bella`}
-            className={`inline-flex w-fit items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-semibold tracking-wide text-black transition hover:bg-white/90 ${FOCUS}`}
-          >
-            {siteConfig.about.cta} →
-          </a>
-          <a
-            href={`mailto:${siteConfig.contactEmail}`}
-            className={`rounded text-base text-white/70 underline underline-offset-4 transition hover:text-white ${FOCUS}`}
-          >
-            {siteConfig.contactEmail}
-          </a>
-        </div>
+        <ContactReveal />
       </section>
 
       <footer className="border-t border-white/10 px-[6vw] py-10 text-sm text-white/45">

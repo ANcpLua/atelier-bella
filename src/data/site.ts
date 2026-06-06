@@ -3,7 +3,8 @@
 
 export const siteConfig = {
   brand: "Atelier Bella",
-  contactEmail: "anfh22@outlook.com",
+  // Base64 so the address is not a scrapeable plain string — decoded only on click.
+  contactEmailB64: "YW5maDIyQG91dGxvb2suY29t",
 
   hero: {
     eyebrow: "Online Atelier",
@@ -16,9 +17,8 @@ export const siteConfig = {
   gallery: {
     eyebrow: "Ausstellung",
     title: "Werke",
-    // The work count is prepended automatically, e.g. "8 Originale — …".
-    intro:
-      "Originale — Öl & Studie. Jedes Bild als digitale Edition erhältlich.",
+    // The work count is prepended automatically, e.g. "2 Originale — …".
+    intro: "Originale — verfügbar auf Anfrage.",
   },
 
   about: {
