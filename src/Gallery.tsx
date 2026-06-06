@@ -144,12 +144,20 @@ export default function Gallery({ onBack }: { onBack?: () => void }) {
         <p className="mt-6 max-w-[60ch] text-lg leading-relaxed text-white/70">
           {siteConfig.about.body}
         </p>
-        <a
-          href={`mailto:${siteConfig.contactEmail}?subject=Anfrage%20Atelier%20Bella`}
-          className={`mt-8 inline-flex w-fit items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-semibold tracking-wide text-black transition hover:bg-white/90 ${FOCUS}`}
-        >
-          {siteConfig.about.cta} →
-        </a>
+        <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
+          <a
+            href={`mailto:${siteConfig.contactEmail}?subject=Anfrage%20Atelier%20Bella`}
+            className={`inline-flex w-fit items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-semibold tracking-wide text-black transition hover:bg-white/90 ${FOCUS}`}
+          >
+            {siteConfig.about.cta} →
+          </a>
+          <a
+            href={`mailto:${siteConfig.contactEmail}`}
+            className={`rounded text-base text-white/70 underline underline-offset-4 transition hover:text-white ${FOCUS}`}
+          >
+            {siteConfig.contactEmail}
+          </a>
+        </div>
       </section>
 
       <footer className="border-t border-white/10 px-[6vw] py-10 text-sm text-white/45">
