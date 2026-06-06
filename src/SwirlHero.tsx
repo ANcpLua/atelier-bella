@@ -52,11 +52,11 @@ const PALETTES: Palette[] = [
   {
     id: "fruehling",
     label: "Frühling",
-    hint: "Hellgrün, Mint",
-    swatch: "#7fc24a",
-    base: [0.46, 0.64, 0.42],
-    amp: [0.3, 0.3, 0.26],
-    phase: [0.25, 0.05, 0.3],
+    hint: "Lind, Mint, Hellgrün",
+    swatch: "#86c25a",
+    base: [0.34, 0.56, 0.4],
+    amp: [0.2, 0.2, 0.16],
+    phase: [0.1, 0.0, 0.18],
   },
 ];
 
