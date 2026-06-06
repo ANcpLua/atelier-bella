@@ -60,6 +60,13 @@ const PALETTES: Palette[] = [
   },
 ];
 
+const prefersReducedMotion =
+  typeof window !== "undefined" &&
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+const FOCUS =
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a]";
+
 export default function SwirlHero({ onEnter }: { onEnter?: () => void }) {
   const [active, setActive] = useState(0);
   const p = PALETTES[active];
@@ -69,10 +76,10 @@ export default function SwirlHero({ onEnter }: { onEnter?: () => void }) {
       <SwirlBlend
         key={p.id}
         className="absolute inset-0"
-        speed={0.5}
+        speed={prefersReducedMotion ? 0 : 0.5}
         scale={7}
         iterations={5}
-        cursorInteraction
+        cursorInteraction={!prefersReducedMotion}
         backgroundColor="#0a0a0a"
         paletteBaseR={p.base[0]}
         paletteBaseG={p.base[1]}
@@ -85,17 +92,18 @@ export default function SwirlHero({ onEnter }: { onEnter?: () => void }) {
         palettePhaseB={p.phase[2]}
       />
 
-      {/* legibility veil */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/55" />
+      {/* legibility veils: top/bottom + a left scrim so text stays readable on every palette */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-black/55" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/55 via-black/20 to-transparent" />
 
       <div className="absolute inset-0 flex flex-col justify-center px-[7vw]">
-        <p className="mb-5 text-sm font-medium tracking-[0.35em] text-white/70 uppercase">
+        <p className="mb-5 text-sm font-medium tracking-[0.35em] text-white/75 uppercase">
           Online Atelier
         </p>
         <h1 className="max-w-[16ch] text-5xl leading-[1.02] font-semibold tracking-tight text-white sm:text-6xl md:text-8xl">
           Atelier Bella
         </h1>
-        <p className="mt-7 max-w-[42ch] text-lg text-white/80 md:text-xl">
+        <p className="mt-7 max-w-[42ch] text-lg text-white/85 md:text-xl">
           Malerei, die atmet — Farbwelten zum Mitnehmen, jede Leinwand ein
           eigenes Licht.
         </p>
@@ -103,14 +111,18 @@ export default function SwirlHero({ onEnter }: { onEnter?: () => void }) {
           type="button"
           onClick={onEnter}
           style={{ color: "#0a0a0a" }}
-          className="mt-10 inline-flex w-fit items-center gap-2 rounded-full bg-white/95 px-7 py-3 text-sm font-semibold tracking-wide transition hover:bg-white"
+          className={`mt-10 inline-flex w-fit items-center gap-2 rounded-full bg-white/95 px-7 py-3 text-sm font-semibold tracking-wide transition hover:bg-white ${FOCUS}`}
         >
           Zur Ausstellung →
         </button>
       </div>
 
       {/* palette switcher — desktop: labelled card */}
-      <div className="absolute right-6 bottom-6 hidden w-60 rounded-2xl border border-white/15 bg-black/40 p-2 backdrop-blur-md md:block">
+      <div
+        className="absolute right-6 bottom-6 hidden w-60 rounded-2xl border border-white/15 bg-black/40 p-2 backdrop-blur-md md:block"
+        role="group"
+        aria-label="Farbwelt wählen"
+      >
         <p className="px-3 pt-2 pb-1 text-[10px] font-semibold tracking-[0.3em] text-white/50 uppercase">
           Farbwelt
         </p>
@@ -118,12 +130,14 @@ export default function SwirlHero({ onEnter }: { onEnter?: () => void }) {
           <button
             key={pal.id}
             type="button"
+            aria-pressed={i === active}
             onClick={() => setActive(i)}
-            className={`flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left transition ${
+            className={`flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left transition focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none focus-visible:ring-inset ${
               i === active ? "bg-white/15" : "hover:bg-white/5"
             }`}
           >
             <span
+              aria-hidden="true"
               className="h-4 w-4 shrink-0 rounded-full"
               style={{ backgroundColor: pal.swatch }}
             />
@@ -131,24 +145,32 @@ export default function SwirlHero({ onEnter }: { onEnter?: () => void }) {
               <span className="block text-sm font-medium text-white">
                 {pal.label}
               </span>
-              <span className="block text-xs text-white/50">{pal.hint}</span>
+              <span className="block text-xs text-white/55">{pal.hint}</span>
             </span>
             {i === active && (
-              <span className="h-1.5 w-1.5 rounded-full bg-white" />
+              <span
+                aria-hidden="true"
+                className="h-1.5 w-1.5 rounded-full bg-white"
+              />
             )}
           </button>
         ))}
       </div>
 
       {/* palette switcher — mobile: compact swatch row */}
-      <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 items-center gap-3 rounded-full border border-white/15 bg-black/40 px-4 py-3 backdrop-blur-md md:hidden">
+      <div
+        className="absolute bottom-6 left-1/2 flex -translate-x-1/2 items-center gap-3 rounded-full border border-white/15 bg-black/40 px-4 py-3 backdrop-blur-md md:hidden"
+        role="group"
+        aria-label="Farbwelt wählen"
+      >
         {PALETTES.map((pal, i) => (
           <button
             key={pal.id}
             type="button"
             aria-label={pal.label}
+            aria-pressed={i === active}
             onClick={() => setActive(i)}
-            className={`h-7 w-7 rounded-full ring-2 ring-offset-2 ring-offset-black/60 transition ${
+            className={`h-9 w-9 rounded-full ring-2 ring-offset-2 ring-offset-black/60 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
               i === active ? "ring-white" : "ring-transparent"
             }`}
             style={{ backgroundColor: pal.swatch }}
