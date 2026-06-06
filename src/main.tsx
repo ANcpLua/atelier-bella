@@ -1,8 +1,14 @@
-import { StrictMode } from "react";
+import { StrictMode, useState } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
-import SwirlDemo from "./SwirlDemo";
+import SwirlHero from "./SwirlHero";
 import "./styles/atelier.css";
+
+/** Swirl hero is the landing; "Zur Ausstellung" reveals the gallery app. */
+function Landing() {
+  const [entered, setEntered] = useState(false);
+  return entered ? <App /> : <SwirlHero onEnter={() => setEntered(true)} />;
+}
 
 const root = document.getElementById("root");
 
@@ -10,9 +16,8 @@ if (!root) {
   throw new Error("Missing root element");
 }
 
-// Preview route: `/#swirl` renders the Swirl Blend hero, anything else the app.
-const showSwirlDemo = window.location.hash.startsWith("#swirl");
-
 createRoot(root).render(
-  <StrictMode>{showSwirlDemo ? <SwirlDemo /> : <App />}</StrictMode>
+  <StrictMode>
+    <Landing />
+  </StrictMode>
 );
