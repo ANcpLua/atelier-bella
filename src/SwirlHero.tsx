@@ -92,7 +92,7 @@ export default function SwirlHero({ onEnter }: { onEnter?: () => void }) {
         <p className="mb-5 text-sm font-medium tracking-[0.35em] text-white/70 uppercase">
           Online Atelier
         </p>
-        <h1 className="max-w-[16ch] text-6xl leading-[1.02] font-semibold tracking-tight text-white md:text-8xl">
+        <h1 className="max-w-[16ch] text-5xl leading-[1.02] font-semibold tracking-tight text-white sm:text-6xl md:text-8xl">
           Atelier Bella
         </h1>
         <p className="mt-7 max-w-[42ch] text-lg text-white/80 md:text-xl">
@@ -108,8 +108,8 @@ export default function SwirlHero({ onEnter }: { onEnter?: () => void }) {
         </button>
       </div>
 
-      {/* palette switcher */}
-      <div className="absolute right-6 bottom-6 w-60 rounded-2xl border border-white/15 bg-black/40 p-2 backdrop-blur-md">
+      {/* palette switcher — desktop: labelled card */}
+      <div className="absolute right-6 bottom-6 hidden w-60 rounded-2xl border border-white/15 bg-black/40 p-2 backdrop-blur-md md:block">
         <p className="px-3 pt-2 pb-1 text-[10px] font-semibold tracking-[0.3em] text-white/50 uppercase">
           Farbwelt
         </p>
@@ -136,6 +136,22 @@ export default function SwirlHero({ onEnter }: { onEnter?: () => void }) {
               <span className="h-1.5 w-1.5 rounded-full bg-white" />
             )}
           </button>
+        ))}
+      </div>
+
+      {/* palette switcher — mobile: compact swatch row */}
+      <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 items-center gap-3 rounded-full border border-white/15 bg-black/40 px-4 py-3 backdrop-blur-md md:hidden">
+        {PALETTES.map((pal, i) => (
+          <button
+            key={pal.id}
+            type="button"
+            aria-label={pal.label}
+            onClick={() => setActive(i)}
+            className={`h-7 w-7 rounded-full ring-2 ring-offset-2 ring-offset-black/60 transition ${
+              i === active ? "ring-white" : "ring-transparent"
+            }`}
+            style={{ backgroundColor: pal.swatch }}
+          />
         ))}
       </div>
     </div>
