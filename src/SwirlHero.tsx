@@ -102,7 +102,8 @@ export default function SwirlHero({ onEnter }: { onEnter?: () => void }) {
         <button
           type="button"
           onClick={onEnter}
-          className="mt-10 inline-flex w-fit items-center gap-2 rounded-full bg-white/95 px-7 py-3 text-sm font-semibold tracking-wide text-black transition hover:bg-white"
+          style={{ color: "#0a0a0a" }}
+          className="mt-10 inline-flex w-fit items-center gap-2 rounded-full bg-white/95 px-7 py-3 text-sm font-semibold tracking-wide transition hover:bg-white"
         >
           Zur Ausstellung →
         </button>
