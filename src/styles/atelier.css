@@ -102,8 +102,8 @@ img {
 }
 
 ::selection {
-  background: rgba(var(--theme-primary-rgb), 0.24);
-  color: var(--theme-text);
+  background: rgba(var(--theme-primary-rgb), 0.85);
+  color: #17100f;
 }
 /* Respect reduced motion globally (a11y baseline). */
 @media (prefers-reduced-motion: reduce) {
