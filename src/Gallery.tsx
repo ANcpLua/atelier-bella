@@ -139,7 +139,7 @@ export default function Gallery({ onBack }: { onBack?: () => void }) {
           ein Werk interessiert oder du eine Idee mitbringst.
         </p>
         <a
-          href="mailto:hallo@atelierbella.art?subject=Anfrage%20Atelier%20Bella"
+          href="mailto:anfh22@outlook.com?subject=Anfrage%20Atelier%20Bella"
           className={`mt-8 inline-flex w-fit items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-semibold tracking-wide text-black transition hover:bg-white/90 ${FOCUS}`}
         >
           Schreib dem Atelier →
