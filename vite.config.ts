@@ -10,9 +10,17 @@ export default defineConfig({
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
-        manualChunks: {
-          react: ["react", "react-dom"],
-          three: ["three", "@react-three/fiber"],
+        // Vite 8 bundles with Rolldown, which dropped Rollup's object form of
+        // `manualChunks`. The current API is `output.codeSplitting.groups`,
+        // which captures vendor modules by id via a `test` pattern.
+        codeSplitting: {
+          groups: [
+            { name: "react", test: /node_modules[\\/]react(-dom)?[\\/]/ },
+            {
+              name: "three",
+              test: /node_modules[\\/](three|@react-three[\\/]fiber)[\\/]/,
+            },
+          ],
         },
       },
     },
