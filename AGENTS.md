@@ -4,9 +4,11 @@ A small single-page React storefront for the painter **Atelier Bella**: a
 full-screen WebGL hero, then a clean gallery of original works with inquire/buy
 links. Static SPA — no backend, no SSR. Live at **https://atelierbella.art/**.
 
-> **Private repo — keep it private.**
-> `src/components/react-bits/swirl-blend.tsx` is licensed React Bits Starter
-> source; making this repository public would violate the React Bits license.
+> **Public repo — keep it free of licensed source.**
+> The hero shader `src/components/swirl/swirl-blend.tsx` is original work.
+> Do not `shadcn add` React Bits Pro components into this tree: their licence
+> (§1.3) forbids publishing that source in a public repository, at every tier,
+> "even if it has been modified".
 
 ## Stack
 
@@ -38,7 +40,7 @@ src/SwirlHero.tsx       # full-screen WebGL hero + FARBWELT palette switcher
 src/Gallery.tsx         # editorial masonry gallery + contact section
 src/data/site.ts        # EDITABLE CONTENT: brand, copy, contact email (base64)
 src/data/artwork.ts     # EDITABLE WORKS: the artworks (forgiving schema)
-src/components/react-bits/swirl-blend.tsx  # the hero shader (licensed)
+src/components/swirl/swirl-blend.tsx      # the hero shader (original GLSL)
 src/lib/utils.ts        # cn() helper (clsx + tailwind-merge)
 src/styles/atelier.css  # Tailwind v4 entry + tokens + reduced-motion baseline
 public/artwork/         # artwork images (.webp), referenced by URL
@@ -72,21 +74,20 @@ public/artwork/         # artwork images (.webp), referenced by URL
 
 ## React Bits
 
-Only **`swirl-blend`** is used (the hero shader). `components.json` is wired to
-`@reactbits-starter` only; the full vendor reference is **`SKILL.md`** at the
-repo root. Add more with `npx shadcn@latest add @reactbits-starter/<slug>-tw`
-(needs `REACTBITS_LICENSE_KEY` in `.env.local`). SKILL.md is Next.js-first —
-this is Vite: no `next/dynamic` (use `React.lazy`); `"use client"` is a no-op.
+Not used. The hero shader is hand-written GLSL in `src/components/swirl/`.
+`components.json` still declares the `@reactbits-starter` registry, but nothing
+is installed from it and nothing may be: this repo is public, and the React Bits
+Pro licence forbids publishing that source in open source repositories at every
+tier. If you need a premium component, keep it in a private project.
 
 ## Deployment
 
 GitHub Pages via `.github/workflows/deploy-pages.yml` on push to `main` (or
-`workflow_dispatch`). Custom domain **`atelierbella.art`** (`public/CNAME`). The
-repo is **private**, the Pages site is **public** — only the compiled `dist/`
-ships, never source. `vite.config.ts` sets `base: "./"` and splits the
-`three` / `react` chunks for caching.
+`workflow_dispatch`). Custom domain **`atelierbella.art`** (`public/CNAME`).
+Only the compiled `dist/` ships. `vite.config.ts` sets `base: "./"` and splits
+the `three` / `react` chunks for caching.
 
 ## Secrets
 
-`.env.local` (gitignored) holds `REACTBITS_LICENSE_KEY` — the only true secret.
-Keep it out of the repo and the client bundle.
+None in this repo. `.env.local` is gitignored; a `REACTBITS_LICENSE_KEY` there
+is only needed if you install from the paid registry, which this project doesn't.

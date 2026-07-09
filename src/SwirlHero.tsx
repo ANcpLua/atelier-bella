@@ -1,5 +1,5 @@
 import { useState } from "react";
-import SwirlBlend from "@/components/react-bits/swirl-blend";
+import SwirlBlend from "@/components/swirl/swirl-blend";
 import { siteConfig } from "@/data/site";
 
 type Palette = {
