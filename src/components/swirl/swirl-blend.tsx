@@ -147,10 +147,20 @@ const FRAG = /* glsl */ `
   }
 `;
 
-/** Peak curl at the cursor, in radians. Past ~0.6 the noise visibly shears. */
-const pointerStrength_MAX = 0.55;
-/** How much a unit of pointer travel (in uv) adds to the target curl. */
-const pointerStrength_GAIN = 2.2;
+/**
+ * Peak curl at the cursor, in radians.
+ *
+ * A rotation whose angle varies with radius does not turn the field rigidly —
+ * it *shears* it, and the shear strain is |r · dθ/dr|. For θ(r) = s·exp(-k·r²)
+ * that peaks at 0.405 when s=0.55, k=9: over three times the old pinch's 0.120
+ * peak strain, which read as a harsh smeared pinwheel.
+ *
+ * s=0.16, k=4 peaks at 0.118 — the same intensity the pinch had, over the same
+ * ~395px radius. Same presence, but a curve instead of a knot.
+ */
+const pointerStrength_MAX = 0.16;
+/** Maps per-event pointer travel (uv) to curl. A normal flick lands near MAX. */
+const pointerStrength_GAIN = 6;
 /** Seconds for the curl centre to catch the cursor (63% of the way). */
 const POINTER_TAU = 0.07;
 /** Seconds for the curl amount to reach/release its target. */
@@ -226,9 +236,12 @@ const Scene: React.FC<SceneProps> = ({
       lastMoveAt.current = performance.now();
 
       pointer.current.set(x, y);
+      // Track travel per event; do NOT accumulate. Summing pinned the curl at
+      // its ceiling for as long as the pointer kept moving, so the field never
+      // relaxed while in use.
       targetStrength.current = Math.min(
         pointerStrength_MAX,
-        targetStrength.current + dist * pointerStrength_GAIN
+        dist * pointerStrength_GAIN
       );
     },
     [cursorInteraction]
@@ -288,7 +301,7 @@ const SwirlBlend: React.FC<SwirlBlendProps> = ({
   scale = 7,
   iterations = 5,
   cursorInteraction = true,
-  pointerRadius = 9,
+  pointerRadius = 4,
   backgroundColor = "#0a0a0a",
   paletteBaseR = 0.5,
   paletteBaseG = 0.5,
