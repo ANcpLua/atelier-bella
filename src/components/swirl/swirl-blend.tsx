@@ -18,8 +18,10 @@ export interface SwirlBlendProps {
   scale?: number;
   /** fBm octaves. Cost is linear in this. */
   iterations?: number;
-  /** Let the pointer bend the flow toward the cursor. */
+  /** Let the pointer curl the flow around the cursor. */
   cursorInteraction?: boolean;
+  /** Gaussian falloff of the curl. Higher = tighter, more local. */
+  pointerRadius?: number;
   backgroundColor?: string;
   paletteBaseR?: number;
   paletteBaseG?: number;
@@ -57,6 +59,7 @@ const FRAG = /* glsl */ `
   uniform vec2  uResolution;
   uniform vec2  uPointer;
   uniform float uPointerStrength;
+  uniform float uPointerRadius;
   uniform float uScale;
   uniform int   uIterations;
   uniform vec3  uBackground;
@@ -97,13 +100,26 @@ const FRAG = /* glsl */ `
   void main() {
     // Aspect-correct so the swirl does not stretch on wide viewports.
     vec2 uv = vUv;
-    vec2 p = (uv - 0.5) * vec2(uResolution.x / uResolution.y, 1.0);
+    float ar = uResolution.x / uResolution.y;
+    vec2 p = (uv - 0.5) * vec2(ar, 1.0);
 
     float t = uTime;
 
-    // Pull the field toward the pointer, falling off with distance.
-    vec2 toPointer = uPointer - uv;
-    p += toPointer * uPointerStrength * exp(-4.0 * dot(toPointer, toPointer));
+    // Curl the field AROUND the pointer instead of dragging it toward the
+    // pointer. Translating samples toward the cursor contracts the domain and
+    // bunches the noise into a knot; a rotation has determinant 1, so it bends
+    // the flow without compressing it.
+    //
+    // The pointer is lifted into the same aspect-corrected space as p first.
+    // Mixing uv-space (unit square) with aspect-space made the falloff an
+    // ellipse and scaled the x displacement by 1/ar, which is why the effect
+    // read as flat and smeared on a wide viewport.
+    vec2 pp = (uPointer - 0.5) * vec2(ar, 1.0);
+    vec2 d = p - pp;
+    float fall = exp(-uPointerRadius * dot(d, d));   // circular on screen
+    float ang = uPointerStrength * fall;
+    float sa = sin(ang), ca = cos(ang);
+    p = pp + mat2(ca, -sa, sa, ca) * d;
 
     vec2 sp = p * uScale;
 
@@ -131,6 +147,15 @@ const FRAG = /* glsl */ `
   }
 `;
 
+/** Peak curl at the cursor, in radians. Past ~0.6 the noise visibly shears. */
+const pointerStrength_MAX = 0.55;
+/** How much a unit of pointer travel (in uv) adds to the target curl. */
+const pointerStrength_GAIN = 2.2;
+/** Seconds for the curl centre to catch the cursor (63% of the way). */
+const POINTER_TAU = 0.07;
+/** Seconds for the curl amount to reach/release its target. */
+const STRENGTH_TAU = 0.16;
+
 type SceneProps = Required<
   Omit<SwirlBlendProps, "width" | "height" | "className">
 >;
@@ -140,6 +165,7 @@ const Scene: React.FC<SceneProps> = ({
   scale,
   iterations,
   cursorInteraction,
+  pointerRadius,
   backgroundColor,
   paletteBaseR,
   paletteBaseG,
@@ -154,7 +180,11 @@ const Scene: React.FC<SceneProps> = ({
   const material = useRef<THREE.ShaderMaterial>(null);
   const { size } = useThree();
   const pointer = useRef(new THREE.Vector2(0.5, 0.5));
+  /** Radians of curl at the cursor, eased toward `targetStrength`. */
   const pointerStrength = useRef(0);
+  const targetStrength = useRef(0);
+  const lastPointer = useRef(new THREE.Vector2(0.5, 0.5));
+  const lastMoveAt = useRef(0);
 
   const uniforms = useMemo(
     () => ({
@@ -162,6 +192,7 @@ const Scene: React.FC<SceneProps> = ({
       uResolution: { value: new THREE.Vector2(1, 1) },
       uPointer: { value: new THREE.Vector2(0.5, 0.5) },
       uPointerStrength: { value: 0 },
+      uPointerRadius: { value: pointerRadius },
       uScale: { value: scale },
       uIterations: { value: iterations },
       uBackground: { value: new THREE.Color(backgroundColor) },
@@ -181,11 +212,24 @@ const Scene: React.FC<SceneProps> = ({
   const onPointerMove = useCallback(
     (event: PointerEvent) => {
       if (!cursorInteraction) return;
-      pointer.current.set(
-        event.clientX / window.innerWidth,
-        1 - event.clientY / window.innerHeight
+      const x = event.clientX / window.innerWidth;
+      const y = 1 - event.clientY / window.innerHeight;
+
+      // Drive the curl from pointer *speed*, not from the bare fact of a move.
+      // A slow drift barely bends the field; a flick opens it up. Without this
+      // the strength snapped to a constant on every event while the position
+      // eased in slowly, so the distortion visibly trailed the cursor.
+      const dx = x - lastPointer.current.x;
+      const dy = y - lastPointer.current.y;
+      const dist = Math.hypot(dx, dy);
+      lastPointer.current.set(x, y);
+      lastMoveAt.current = performance.now();
+
+      pointer.current.set(x, y);
+      targetStrength.current = Math.min(
+        pointerStrength_MAX,
+        targetStrength.current + dist * pointerStrength_GAIN
       );
-      pointerStrength.current = 0.12;
     },
     [cursorInteraction]
   );
@@ -199,12 +243,26 @@ const Scene: React.FC<SceneProps> = ({
   useFrame((_, delta) => {
     const m = material.current;
     if (!m) return;
-    m.uniforms.uTime.value += delta * speed;
+    // Clamp: a backgrounded tab can hand back a multi-second delta on resume.
+    const dt = Math.min(delta, 1 / 30);
+
+    m.uniforms.uTime.value += dt * speed;
     m.uniforms.uResolution.value.set(size.width, size.height);
-    m.uniforms.uPointer.value.lerp(pointer.current, 0.06);
-    // Ease the pointer influence back to rest so the field settles when idle.
-    pointerStrength.current *= 0.97;
+
+    // Frame-rate independent easing. `1 - exp(-dt/tau)` gives the same settling
+    // time at 60Hz and 120Hz; the old per-frame 0.06 / 0.97 constants decayed
+    // twice as fast on a 120Hz display.
+    const follow = 1 - Math.exp(-dt / POINTER_TAU);
+    m.uniforms.uPointer.value.lerp(pointer.current, follow);
+
+    // Bleed the curl away once the pointer rests, so the field settles.
+    if (performance.now() - lastMoveAt.current > 90) targetStrength.current = 0;
+
+    const ease = 1 - Math.exp(-dt / STRENGTH_TAU);
+    pointerStrength.current +=
+      (targetStrength.current - pointerStrength.current) * ease;
     m.uniforms.uPointerStrength.value = pointerStrength.current;
+    m.uniforms.uPointerRadius.value = pointerRadius;
   });
 
   return (
@@ -230,6 +288,7 @@ const SwirlBlend: React.FC<SwirlBlendProps> = ({
   scale = 7,
   iterations = 5,
   cursorInteraction = true,
+  pointerRadius = 9,
   backgroundColor = "#0a0a0a",
   paletteBaseR = 0.5,
   paletteBaseG = 0.5,
@@ -263,6 +322,7 @@ const SwirlBlend: React.FC<SwirlBlendProps> = ({
         scale={scale}
         iterations={iterations}
         cursorInteraction={cursorInteraction}
+        pointerRadius={pointerRadius}
         backgroundColor={backgroundColor}
         paletteBaseR={paletteBaseR}
         paletteBaseG={paletteBaseG}
